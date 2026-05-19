@@ -74,7 +74,9 @@ class StockMovmentRepository extends BaseRepository
                 }
             }
         }
-        $this->getQuery()->whereRaw("stock_movments.id IN (select max(id) from restaurantErp.stock_movments group by product_id)");
+        if ($paginate->visualization_type == "true") {
+            $this->getQuery()->whereRaw("stock_movments.id IN (select max(id) from restaurantErp.stock_movments group by product_id)");
+        }
         return parent::findAll($paginate);
     }
 }
