@@ -10,6 +10,8 @@ use App\Modules\Order\Enums\OrderStatusEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
+use function Laravel\Prompts\select;
+
 class OrderRepository extends BaseRepository
 {
     protected array $searchableFields = [];
@@ -24,20 +26,23 @@ class OrderRepository extends BaseRepository
 
     public function findAll(PaginateRequest $paginate)
     {
-        $this->getQuery()->where('business_day', Order::getBusinessDay());
+    
+        $this->getQuery()->select("orders.*")
+            ->where('business_day', Order::getBusinessDay());
         if ($status = filter_var($paginate->status, FILTER_SANITIZE_NUMBER_INT)) {
             $this->getQuery()->where('status', $status);
         }
         if ($paginate->search){
-            $this->getQuery()->join('users as u', 'u.id', '=', 'orders.waiter_id')
-                ->join("tables as t", 't.id', '=', 'orders.table_id')
-                        ->where(function($query) use($paginate){
-                            $query->orWhere([
-                                ['u.name', 'like', "%$paginate->search%"],
-                                ['t.name', 'like', "%$paginate->search%"],
-                                ['orders.customer_name', 'like', "%$paginate->search%"]
-                            ]);
-                        });
+            $this->getQuery()
+                ->join('users as u', 'u.id', '=', 'orders.waiter_id')
+                    ->join("tables as t", 't.id', '=', 'orders.table_id')
+                            ->where(function($query) use($paginate){
+                                $query->orWhere([
+                                    ['u.name', 'like', "%$paginate->search%"],
+                                    ['t.name', 'like', "%$paginate->search%"],
+                                    ['orders.customer_name', 'like', "%$paginate->search%"]
+                                ]);
+                            });
         }
         return parent::findAll($paginate);
     }
