@@ -37,7 +37,7 @@ class SaleHandler implements StockMovmentHandlerInterface
                     $itemQuantity = $itensQuantities[$sheet->menu_item_id] * $sheet->quantity;
                     $product = $sheet->product;
                     $movement = $this->stockMovmentRepository->findLatestByproduct($product);
-                    if (!$movement->quantity || $itemQuantity > $movement->current_stock) {
+                    if ($itemQuantity > $movement->current_stock) {
                         throw new StockMovementException("{$product->name} está com estoque indisponivel para concluir esse pedido.", 400);
                     }
                     $payload = [

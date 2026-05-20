@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Foundation\Base\BaseApiController;
 use App\Http\Requests\Order\OrderCancelItemRequest;
+use App\Http\Requests\Order\OrderCancelRequest;
 use App\Http\Requests\Order\OrderCreateRequest;
 use App\Http\Requests\Order\OrderTransfertRequest;
 use App\Http\Requests\Order\OrderUpdateRequest;
@@ -74,5 +75,13 @@ class OrderController extends BaseApiController
         $useCase = $this->container->get(OrderCancelUseCase::class);
         $useCase->executeItem($request);
         return $this->apiResponse("Item cancelado com successo !");
+    }
+
+    public function cancel(OrderCancelRequest $request): JsonResponse
+    {
+        /** @var OrderCancelUseCase $useCase */
+        $useCase = $this->container->get(OrderCancelUseCase::class);
+        $useCase->execute($request);
+        return $this->apiResponse("Pedido cancelado com successo !");
     }
 }

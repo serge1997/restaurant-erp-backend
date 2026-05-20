@@ -3,7 +3,7 @@ namespace App\Http\Requests\Order;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class OrderCancelItemRequest extends FormRequest
+class OrderCancelRequest extends FormRequest
 {
 
     public function authorize(): bool
@@ -15,7 +15,6 @@ class OrderCancelItemRequest extends FormRequest
     {
         return [
             "id"    => "required|integer",
-            "item_id"   => "required|integer",
             "quantity"  => "required|integer",
             "reason"    => "required|integer",
             "observation"   => "nullable|string|required_if:reason,6",
