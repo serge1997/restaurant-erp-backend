@@ -33,7 +33,7 @@ class PurchaseRequisitionResource extends JsonResource
                     "label" => $this->department->getLabel()
                 ],
                 'expected_delivery_date' => [
-                    'formated' => $this->expected_delivery_date?->format('Y/m/d'),
+                    'formatted' => $this->expected_delivery_date?->format('Y/m/d'),
                     'original' => $this->expected_delivery_date?->format('d-m-Y')
                 ],
                 "cost"    => Number::currency($this->totalCost(), "BRL", "pt-BR")

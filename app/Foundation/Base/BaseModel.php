@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Number;
 
+use Illuminate\Validation\UnauthorizedException;
 use function Illuminate\Support\now;
 
 class BaseModel extends Model
@@ -92,5 +93,17 @@ class BaseModel extends Model
                 return "+{$periode_year} ano";
             }
        }
+    }
+
+    public function isOwner(): bool
+    {
+        return $this->restaurant_id === $this->auth()->restaurant_id;
+    }
+
+    public function authorizeRestaurantOwnership()
+    {
+        if(!$this->isOwner()){
+            throw new UnauthorizedException("voce nao tem permissao para acessar esse recurso", 401);
+        }
     }
 }

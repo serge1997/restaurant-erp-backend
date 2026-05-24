@@ -54,6 +54,7 @@ final class PurchaseRequisitionUpdateUseCase
     public function attacheStatus(PurchaseRequisition $purchaseRequisition, int $status): string
     {
         $status = PurchaseRequisitionStatusEnum::from($status);
+        $data = [];
         $message = "status alterado com sucesso";
         if ($status->isApproved()) {
             $message = "Requisiçao aprovado com successo";

@@ -33,7 +33,7 @@ class PurchaseRequisitionFormResource extends JsonResource
                     "label" => $this->department->getLabel()
                 ],
                 'expected_delivery_date' => [
-                    'formatted' => $this->expected_delivery_date?->format('Y/m/d'),
+                    'formatted' => $this->expected_delivery_date?->format('d/m/Y'),
                     'original' => $this->expected_delivery_date?->format('Y-m-d')
                 ],
                 "items" => PurchaseRequisitionItemResource::collection($this->items)

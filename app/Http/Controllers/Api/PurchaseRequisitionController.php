@@ -6,7 +6,7 @@ use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\PurchaseRequisition\PurchaseRequisitionCreateRequest;
 use App\Http\Requests\PurchaseRequisition\PurchaseRequisitionUpdateRequest;
 use App\Models\PurchaseRequisition;
-use App\Modules\PurchaseRequisition\Enums\PurchaseRequisitionStatusEnum;
+use App\Modules\PurchaseRequisition\UseCases\PurchaseRequisitionDocumentPdfUseCase;
 
 class PurchaseRequisitionController extends BaseApiController
 {
@@ -65,6 +65,13 @@ class PurchaseRequisitionController extends BaseApiController
         $useCase = $this->container->get(\App\Modules\PurchaseRequisition\UseCases\PurchaseRequisitionListUseCase::class);
         $result = $useCase->listAllUndeliveredProductsById($purchaseRequisition);
         return $this->apiResponse("showing undelivered product by requisition", $result);
+    }
+
+    public function pdf(PurchaseRequisition $purchaseRequisition)
+    {
+        /** @var PurchaseRequisitionDocumentPdfUseCase $useCase */
+        $useCase = $this->container->get(PurchaseRequisitionDocumentPdfUseCase::class);
+        return $useCase->execute($purchaseRequisition);
     }
 
 }

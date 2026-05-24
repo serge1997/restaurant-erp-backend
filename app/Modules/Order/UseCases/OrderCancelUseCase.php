@@ -46,10 +46,11 @@ final class OrderCancelUseCase
                     $reset_stock_quantities[$item->id] = $remainingQty;
                 }
                 $item->itemCancellations()->create([
-                    'quantity'     => $remainingQty, // só o que faltava
-                    'reason'       => $payload['reason'],
-                    'observation'        => $payload['observation'],
-                    'restock'      => $payload['restock'],
+                    'quantity'              => $remainingQty, // só o que faltava
+                    'reason'                => $payload['reason'],
+                    'observation'           => $payload['observation'],
+                    'restock'               => $payload['restock'],
+                    'order_id'              => $item->order_id
                 ]);
             }
             $payload['reset_stock_quantities'] = $reset_stock_quantities;
@@ -57,7 +58,7 @@ final class OrderCancelUseCase
             if($payload['restock']){
                 $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository);
                 $handler = $stockMovementHandler->handler(StockMovmentReferenceTypeEnum::DEVOLUTION_SALE);
-                $handler->handle($item, $payload);
+                $handler->handle($order, $payload);
             }
         });
     }

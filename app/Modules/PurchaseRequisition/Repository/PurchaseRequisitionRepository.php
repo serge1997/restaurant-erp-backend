@@ -23,7 +23,7 @@ class PurchaseRequisitionRepository extends BaseRepository
     public function attacheStatus(PurchaseRequisition $model, PurchaseRequisitionStatusEnum $status)
     {
         $model->update([
-            "status"    => $status->value
+            "status"    => $status->value,
         ]);
     }
 }

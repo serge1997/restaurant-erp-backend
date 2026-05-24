@@ -36,14 +36,25 @@ class PurchaseRequisition extends BaseModel
 
     protected static function boot()
     {
-
         parent::boot();
+        static::creating(function(PurchaseRequisition $model){
+            $model->author_id = $model->auth()->id;
+        });
+
         static::created(function(PurchaseRequisition $model) {
             $restaurantInicial = $model->restaurant->nameInicial();
             $randAlfN = $model->id . strtoupper(Str::random(length: 3));
             $sku = "{$restaurantInicial}-{$randAlfN}";
             $model->code = $sku;
             $model->saveQuietly();
+        });
+
+        static::updated(function(PurchaseRequisition $model){
+            if($model->status->isApproved()){
+                $model->approved_by = $model->auth()->id;
+                $model->approved_at = now()->format('Y-m-d');
+                $model->saveQuietly();
+            }
         });
     }
     public function items(): HasMany
@@ -65,4 +76,15 @@ class PurchaseRequisition extends BaseModel
     {
         return $this->items()->sum("total_cost") ?? 0;
     }
+
+    public function approvedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function createdBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_id');
+    }
+
 }

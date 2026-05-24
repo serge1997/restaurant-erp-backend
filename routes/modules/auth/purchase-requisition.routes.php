@@ -11,5 +11,6 @@ Route::controller(PurchaseRequisitionController::class)->group(function(){
         Route::put("/", "update")->name("update");
         Route::put("/attache-status/{purchaseRequisition}/status/{status}", "attacheStatus")->name("attacheStatus");
         Route::get("/list-undelivered-products-by-id/{purchaseRequisition}", "listAllUndeliveredProductsById")->name("listAllUndeliveredProductsById");
+        Route::get("/{purchaseRequisition}/pdf", "pdf")->name("pdf");
     });
 });
