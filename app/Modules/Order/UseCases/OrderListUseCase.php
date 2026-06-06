@@ -33,4 +33,11 @@ final class OrderListUseCase
     {
         return new OrderResource($order);
     }
+
+    public function history(PaginateRequest $paginateRequest)
+    {
+        return OrderResource::collection(
+            $this->orderRepository->history($paginateRequest)
+        );
+    }
 }

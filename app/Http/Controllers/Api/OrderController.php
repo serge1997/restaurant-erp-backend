@@ -84,4 +84,12 @@ class OrderController extends BaseApiController
         $useCase->execute($request);
         return $this->apiResponse("Pedido cancelado com successo !");
     }
+
+    public function history(PaginateRequest $paginate)
+    {
+        /** @var OrderListUseCase $useCase */
+        $useCase = $this->container->get(OrderListUseCase::class);
+        $response = $useCase->history($paginate);
+        return $this->apiResponse("querying order history", $response);
+    }
 }

@@ -47,6 +47,31 @@ class OrderRepository extends BaseRepository
         return parent::findAll($paginate);
     }
 
+    public function history(PaginateRequest $paginate)
+    {
+        $query = $this->getQuery();
+        if ((int)$paginate->status){
+            $query->where('status', $paginate->status);
+        }
+        if ($payment = (int)$paginate->payment){
+            $payment === 1 ? $query->where([
+                ['payment_method', null],
+                ['status', '<>', OrderStatusEnum::CANCELLED->value]
+            ]) : $query->whereNot([
+                ['payment_method', null],
+                ['status', OrderStatusEnum::CANCELLED->value]
+            ]);
+        }
+        if ($paymentMethod = (int)$paginate->paymentMethod){
+            $query->where('payment_method', $paymentMethod);
+        }
+        if ($table = (int)$paginate->table){
+            $query->join("tables as t", "t.id", "=", "orders.table_id")
+                ->where("orders.table_id", $table);
+        }
+        return parent::findAll($paginate);
+    }
+
     public function openingByTableId(int $table_id)
     {
         return $this->newQuery()->where([

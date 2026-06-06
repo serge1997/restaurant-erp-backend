@@ -2,7 +2,6 @@
 namespace App\Modules\Table\Repository;
 
 use App\Foundation\Base\BaseRepository;
-use App\Http\Requests\PaginateRequest;
 use App\Models\Table;
 use App\Modules\Order\Enums\OrderStatusEnum;
 use Illuminate\Support\Facades\DB;
@@ -18,13 +17,13 @@ class TableRepository extends BaseRepository
         return app(Table::class);
     }
 
-    public function findAll(PaginateRequest $paginate)
+    public function findWithActiveOrder()
     {
         $this->whereRestaurantId();
         return $this->getQuery()->select(
             "tables.*",
             "o.id as active_order"
-        )->leftJoin("orders as o", "o.table_id", "=", "tables.id")
+        )->join("orders as o", "o.table_id", "=", "tables.id")
             ->get();
     }
 
@@ -36,7 +35,7 @@ class TableRepository extends BaseRepository
     public function findAllAvailable()
     {
         return $this->newQuery()->whereNotIn("tables.id", function($query){
-            $query->select("table_id")->from("orders")->where("status", OrderStatusEnum::OPEN);
+            $query->select("table_id")->from("orders")->where("status", OrderStatusEnum::OPEN->value);
         })->get();
     }
 

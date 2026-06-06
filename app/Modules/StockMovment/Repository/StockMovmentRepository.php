@@ -60,9 +60,9 @@ class StockMovmentRepository extends BaseRepository
                 }
             }
         }
-        if ($paginate->moved_at_from || $paginate->moved_at_to){
-            $to = $paginate->moved_at_to ? $paginate->moved_at_to : null;
-            $from = $paginate->moved_at_from ? $paginate->moved_at_from : null;
+        if ($paginate->moved_dateFrom || $paginate->moved_dateTo){
+            $to = $paginate->moved_dateTo ? $paginate->moved_dateTo : null;
+            $from = $paginate->moved_dateFrom ? $paginate->moved_dateFrom : null;
             if ($to && $from) {
                 $this->getQuery()->whereBetween("moved_at", [$from, $to]);
             }else{

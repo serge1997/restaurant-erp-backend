@@ -61,4 +61,12 @@ class TableController extends BaseApiController
         $response = $useCase->listForOrders();
         return $this->apiResponse("list tables for orders", $response);
     }
+
+    public function listAvailables()
+    {
+        /**  @var TableListUseCase $useCase  */
+        $useCase = $this->container->get(TableListUseCase::class);
+        $response = $useCase->listAvailables();
+        return $this->apiResponse("list tables for orders", $response);
+    }
 }
