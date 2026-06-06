@@ -46,17 +46,17 @@ class StockMovmentRepository extends BaseRepository
         if ($paginate->reference_types) {
             $this->getQuery()->whereIn("stock_movments.reference_type", $paginate->reference_types);
         }
-        if ($paginate->delivery_dateFrom || $paginate->delivery_dateTo){
-            $to = $paginate->delivery_dateTo ? $paginate->delivery_dateTo . " 23:59:59" : null;
-            $from = $paginate->delivery_dateFrom ? $paginate->delivery_dateFrom . " 00:00:00" : null;
+        if ($paginate->lastMovFrom || $paginate->lastMovTo){
+            $to = $paginate->lastMovTo ? $paginate->lastMovTo : null;
+            $from = $paginate->lastMovFrom ? $paginate->lastMovFrom : null;
             if ($to && $from) {
-                $this->getQuery()->whereBetween("created_at", [$from, $to]);
+                $this->getQuery()->whereBetween("moved_at", [$from, $to]);
             }else{
                 if ($from) {
-                    $this->getQuery()->whereDate("created_at", ">=", $from);
+                    $this->getQuery()->whereDate("moved_at", ">=", $from);
                 }
                 if ($to) {
-                    $this->getQuery()->whereDate("created_at", "<=", $to);
+                    $this->getQuery()->whereDate("moved_at", "<=", $to);
                 }
             }
         }

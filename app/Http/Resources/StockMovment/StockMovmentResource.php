@@ -18,6 +18,7 @@ class StockMovmentResource extends BaseJsonResource
         $out = $this->outSum();
         return [
             "id"                => $this->id,
+            "description"       => $this->description,
             "direction"         => [
                 'label'     =>  $this->reference_type->isDevolutionSale() ? 'Devoluçao venda': $this->direction->getLabel(),
                 'severity'  => $this->direction->getSeverity(),
@@ -48,6 +49,10 @@ class StockMovmentResource extends BaseJsonResource
             'moved_at' => [
                 'original' => $this->moved_at,
                 'formatted' => $this->moved_at->format("d/m/Y")
+            ],
+            "created_by" => [
+                "id"    => $this->createdBy?->id,
+                "name"  => $this->createdBy?->name
             ],
             ...$this->timestamps()
         ];
