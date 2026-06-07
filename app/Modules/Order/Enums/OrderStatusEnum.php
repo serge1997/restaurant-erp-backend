@@ -29,4 +29,14 @@ enum OrderStatusEnum: int
             self::CANCELLED => 'severity-danger'
         };
     }
+
+    public function isCancelled(): bool
+    {
+        return $this == self::CANCELLED;
+    }
+
+    public function isClosed(): bool
+    {
+        return $this == self::CLOSED;
+    }
 }

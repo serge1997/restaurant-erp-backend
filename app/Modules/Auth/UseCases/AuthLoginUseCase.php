@@ -3,6 +3,7 @@ namespace App\Modules\Auth\UseCases;
 
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Resources\RouteGroup\RouteGroupResource;
+use App\Http\Resources\User\UserResource;
 use App\Models\RouteGroup;
 use App\Models\User;
 use App\Modules\User\Infra\UserRepository;
@@ -28,7 +29,7 @@ final class AuthLoginUseCase
         return [
             "token" => $user->createToken('browser', ['*'], $expireAt)->plainTextToken,
             "menu"  => $this->loadMenu($user),
-            'auth'  => $user
+            'auth'  => new UserResource($user)
         ];
     }
 

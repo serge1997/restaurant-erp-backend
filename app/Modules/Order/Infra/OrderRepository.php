@@ -57,27 +57,45 @@ class OrderRepository extends BaseRepository
             $payment === 1 ? $query->where([
                 ['payment_method', null],
                 ['status', '<>', OrderStatusEnum::CANCELLED->value]
-            ]) : $query->whereNot([
-                ['payment_method', null],
-                ['status', OrderStatusEnum::CANCELLED->value]
+            ]) : $query->where([
+                ['payment_method', '<>', null],
+                ['status', '<>', OrderStatusEnum::CANCELLED->value]
             ]);
         }
         if ($paymentMethod = (int)$paginate->paymentMethod){
             $query->where('payment_method', $paymentMethod);
         }
         if ($table = (int)$paginate->table){
-            $query->join("tables as t", "t.id", "=", "orders.table_id")
-                ->where("orders.table_id", $table);
+            $query->where("orders.table_id", $table);
         }
+        if($waiter = (int)$paginate->waiter){
+            $query->where("orders.waiter_id", $waiter);
+        }
+        if($paginate->businessDayFom || $paginate->businessDayTo){
+            $to = $paginate->businessDayTo;
+            $from = $paginate->businessDayFom;
+            if($to && $from){
+                $query->whereBetween('business_day', [$from, $to]);
+            } else if ($to){
+                $query->whereDate('business_day', '<=', $to);
+            } else if ($from){
+                $query->whereDate('business_day', '>=', $from);
+            }
+        }
+        if($customer = $paginate->customer){
+            $query->whereLike('customer_name', "%{$customer}%");
+        }
+        $query->orderBy('id', 'desc');
         return parent::findAll($paginate);
     }
 
     public function openingByTableId(int $table_id)
     {
         return $this->newQuery()->where([
-            ['table_id', $table_id],
-            ['status', '<>', OrderStatusEnum::CLOSED->value]
-        ])->first();
+            ['table_id', $table_id]
+        ])
+            ->whereNotIn('status', [OrderStatusEnum::CLOSED->value, OrderStatusEnum::CANCELLED->value])
+                ->first();
     }
 
     public function findAllOpened(): Collection

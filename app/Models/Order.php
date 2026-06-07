@@ -36,7 +36,8 @@ class Order extends BaseModel
     protected $casts = [
         "payment_status"    => PaymentStatusEnum::class,
         "payment_method"    => PaymentMethodEnum::class,
-        "status"            => OrderStatusEnum::class
+        "status"            => OrderStatusEnum::class,
+        'business_day'      => 'date'
     ];
 
     public function items(): HasMany

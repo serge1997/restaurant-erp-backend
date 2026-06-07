@@ -13,6 +13,6 @@ Route::controller(OrderController::class)->group(function(){
         Route::put("/transfert", "transfert")->name("transfert");
         Route::put("/{order}/payment-method/{paymentMethod}", "paymentMethod")->name("paymentMethod");
         Route::put("/cancel-item", "cancelItem")->name("cancelItem");
-        Route::put("/cancel", "cancel")->name("cancelItem");
+        Route::put("/cancel", "cancel")->name("cancel");
     });
 });

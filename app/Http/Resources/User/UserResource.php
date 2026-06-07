@@ -16,7 +16,8 @@ class UserResource extends JsonResource
     {
         return [
             ...parent::toArray($request),
-            'birth_date'    => $this->birth_date?->format("d/m/Y")
+            'birth_date'    => $this->birth_date?->format("d/m/Y"),
+            'inicial'   => $this->nameInicial()
         ];
     }
 }

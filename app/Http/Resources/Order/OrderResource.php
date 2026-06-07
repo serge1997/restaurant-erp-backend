@@ -21,7 +21,9 @@ class OrderResource extends JsonResource
             'status'    => [
                 'value' => $this->status->value,
                 'label' => $this->status->getLabel(),
-                'severity'  => $this->status->getSeverity()
+                'severity'  => $this->status->getSeverity(),
+                'is_cancelled' => $this->status->isCancelled(),
+                'is_closed' => $this->status->isClosed()
             ],
             'table' => [
                 'id'    => $this->table->id,
@@ -45,7 +47,11 @@ class OrderResource extends JsonResource
             'items' => OrderItemResource::collection($this->items),
             'since' => $this->since(),
             'total' => $this->getTotal(),
-            'cancelItems'   => $this->when($this->cancelItems, OrderItemCancellationResource::collection($this->cancelItems))
+            'cancelItems'   => $this->when($this->cancelItems, OrderItemCancellationResource::collection($this->cancelItems)),
+            'business_day'  => [
+                'original'  => $this->business_day,
+                'formatted' => $this->business_day->format('d/m/Y')
+            ]
         ];
     }
 }
