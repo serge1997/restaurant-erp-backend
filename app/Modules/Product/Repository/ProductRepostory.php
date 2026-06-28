@@ -2,7 +2,9 @@
 namespace App\Modules\Product\Repository;
 
 use App\Foundation\Base\BaseRepository;
+use App\Http\Requests\PaginateRequest;
 use App\Models\Product;
+use Override;
 
 class ProductRepostory extends BaseRepository
 {
@@ -11,7 +13,6 @@ class ProductRepostory extends BaseRepository
         "name",
         "sku",
         "is_active",
-        "category_id"
     ];
     public function __construct(
         private readonly Product $product
@@ -22,5 +23,15 @@ class ProductRepostory extends BaseRepository
     public function eloquent(): Product
     {
        return app(Product::class);
+    }
+
+    #[Override]
+    public function findAll(PaginateRequest $paginate)
+    {
+        $query = $this->getQuery();
+        if ($category = (int)$paginate->category_id) {
+            $query->where('category_id', $category);
+        }
+        return parent::findAll($paginate);
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Supplier;
 
 class SupplierRepostory extends BaseRepository
 {
+    protected array $searchableFields = ["name", "email"];
     public function __construct(
         private readonly Supplier $supplier
     )

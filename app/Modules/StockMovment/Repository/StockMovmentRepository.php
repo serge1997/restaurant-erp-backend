@@ -39,8 +39,7 @@ class StockMovmentRepository extends BaseRepository
                     ->whereIn("cat.id", $paginate->categories);
         }
         if ($paginate->suppliers) {
-            $this->getQuery()->leftJoin("purchase_requisitions as pr", "pr.id", "=", "stock_movments.reference_id")
-                ->join("purchase_requisition_items as pi", "pi.purchase_requisition_id", "=", "pr.id")
+            $this->getQuery()->join("purchase_requisition_items as pi", "pi.purchase_requisition_id", "=", "stock_movments.reference_id")
                     ->whereIn("pi.supplier_id", $paginate->suppliers);
         }
         if ($paginate->reference_types) {
@@ -74,9 +73,18 @@ class StockMovmentRepository extends BaseRepository
                 }
             }
         }
-        if ($paginate->visualization_type == "true") {
-            $this->getQuery()->whereRaw("stock_movments.id IN (select max(id) from restaurantErp.stock_movments group by product_id)");
+        if($paginate->search) {
+            $this->getQuery()->join('products as p', 'p.id', '=', 'stock_movments.product_id')
+                ->where('p.name', 'like', "%{$paginate->search}%");
         }
+        if ($paginate->visualization_type == "true") {
+            if($paginate->suppliers){
+                $this->getQuery()->whereRaw("stock_movments.id IN (select max(id) from restaurantErp.stock_movments where reference_type = 1 group by product_id)");
+            }else{
+                $this->getQuery()->whereRaw("stock_movments.id IN (select max(id) from restaurantErp.stock_movments group by product_id)");
+            }
+        }
+        //dd($this->getQuery()->toRawSql());
         return parent::findAll($paginate);
     }
 }

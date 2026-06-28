@@ -24,7 +24,7 @@ class MenuItemRepository extends BaseRepository
 
     public function findAll(PaginateRequest $paginate)
     {
-        if ($paginate->categories) {
+        if (!empty($paginate->categories)) {
             $this->getQuery()->whereIn("category_id", $paginate->categories);
         }
         if ($paginate->features){

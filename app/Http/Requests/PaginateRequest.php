@@ -34,6 +34,14 @@ class PaginateRequest extends FormRequest
        if ($this->input($key) === "null") {
            return null;
        }
+       if (is_array($this->input($key))) {
+            $paramsKey = array_search(0, $this->input($key));
+            if ($paramsKey !== false) {
+                $newParams = $this->input($key);
+                unset($newParams[$paramsKey]);
+                return $newParams;
+            }
+       }
        return $this->input($key);
    }
 }

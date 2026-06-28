@@ -22,7 +22,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function __construct()
     {
        $this->getModel();
-       $this->whereRestaurantId();
+       //$this->whereRestaurantId();
     }
 
     public function save(array $data): BaseModel|Model|Authenticatable
@@ -93,7 +93,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
             if (in_array($property, $this->searchableFields)){
                 if (!blank($field)){
                     $this->getQuery()->where(column: function ($nestedQuery) use ($field, $paginate, $property) {
-                        $nestedQuery->orWhere($property, 'LIKE', "%{$field}%");
+                        $nestedQuery->orWhere($property, '=', "$field");
                     });
                 }
             }

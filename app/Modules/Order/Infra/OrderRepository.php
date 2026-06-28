@@ -14,7 +14,9 @@ use function Laravel\Prompts\select;
 
 class OrderRepository extends BaseRepository
 {
-    protected array $searchableFields = [];
+    protected array $searchableFields = [
+        'customer_name'
+    ];
     protected string $businessDay {
         get => Order::getBusinessDay();
     }
@@ -50,6 +52,7 @@ class OrderRepository extends BaseRepository
     public function history(PaginateRequest $paginate)
     {
         $query = $this->getQuery();
+        parent::findAll($paginate);
         if ((int)$paginate->status){
             $query->where('status', $paginate->status);
         }
@@ -85,8 +88,14 @@ class OrderRepository extends BaseRepository
         if($customer = $paginate->customer){
             $query->whereLike('customer_name', "%{$customer}%");
         }
-        $query->orderBy('id', 'desc');
-        return parent::findAll($paginate);
+        if($paginate->search) {
+            $query->join('users as u', 'u.id', '=', 'orders.waiter_id')
+                ->orWhere(function($q) use($paginate){
+                    $q->orWhere('u.name', 'like', "%{$paginate->search}%"); 
+                });
+        }
+        $query->orderBy('orders.id', 'desc');
+        return $query->get();
     }
 
     public function openingByTableId(int $table_id)
