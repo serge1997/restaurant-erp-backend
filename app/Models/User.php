@@ -7,6 +7,7 @@ namespace App\Models;
 
 use App\Foundation\Base\ModelTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -150,6 +151,11 @@ class User extends Authenticatable
         }
         $inicial = $name[0][0] . $name[1][0];
         return strtoupper($inicial);
+    }
+
+    public function restaurant(): BelongsTo
+    {
+        return $this->belongsTo(Restaurant::class, 'restaurant_id');
     }
 
     protected static function boot()

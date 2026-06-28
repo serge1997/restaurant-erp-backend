@@ -50,4 +50,16 @@ class Restaurant extends BaseModel
             get: fn($value) => str_pad(number_format($value, 2), 5, "0", STR_PAD_LEFT)
         );
     }
+
+    public function logo(): Attribute
+    {
+        return Attribute::make(
+            get: function($value) : ?string {
+                if (blank($value)) {
+                    return null;
+                }
+                return asset("storage/restaurants/logos/{$value}");
+            }
+        );
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Foundation\Base\BaseApiController;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\Restaurant\RestaurantCreateRequest;
+use App\Http\Requests\restaurant\RestaurantStoreFileRequest;
 use App\Http\Requests\Restaurant\RestaurantUpdateRequest;
 use App\Models\Restaurant;
 
@@ -40,6 +41,14 @@ class RestaurantController extends BaseApiController
         $useCase = $this->container->get(\App\Modules\Restaurant\UseCases\RestaurantUpdateUseCase::class);
         $useCase->execute($request);
         return $this->apiResponse(message: "restaurant alterado com successo", status: 200);
+    }
+
+    public function updateFiles(RestaurantStoreFileRequest $request)
+    {
+        /**  @var \App\Modules\Restaurant\UseCases\RestaurantUpdateUseCase $useCse  */
+        $useCase = $this->container->get(\App\Modules\Restaurant\UseCases\RestaurantUpdateUseCase::class);
+        $useCase->executeFile($request);
+        return $this->apiResponse(message: "arquivos alterados com successo", status: 200);
     }
 
 }

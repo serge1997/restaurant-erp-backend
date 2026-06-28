@@ -21,7 +21,7 @@ final class MenuItemCreateUseCase extends \App\Foundation\Base\BaseUseCase
 
         if ($payload["image"] instanceof \Illuminate\Http\UploadedFile){
             $extension = $payload["image"]->getClientOriginalExtension();
-            $avatarName = md5(Str::password(28) . strtotime("")).".". $extension;
+            $avatarName = md5($payload["image"]->getClientOriginalName() . strtotime("now")).".". $extension;
             $this->cropped_image($payload["image"], 400, 260)
                 ->save(storage_path("app/public/menu_items/{$avatarName}"));
                 

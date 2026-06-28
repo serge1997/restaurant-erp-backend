@@ -24,7 +24,7 @@ class RestaurantCreateRequest extends FormRequest
         return [
             'name'                      => 'required|string|max:60',
             'corporate_name'            => 'required|string|max:60', //razao social
-            'description'               => 'required|string|max:130',
+            //'description'               => 'required|string|max:130',
             'address'                   => 'required|string|max:100',
             'number'                    => 'required|integer',
             'phone'                     => 'required|string|max:60',
@@ -35,7 +35,8 @@ class RestaurantCreateRequest extends FormRequest
             'variable_margim'           => 'numeric|nullable',
             'enable_tecnhical_sheet'    => 'boolean',
             'latitude'                  => 'numeric|nullable',
-            'longitude'                 => 'numeric|nullable'
+            'longitude'                 => 'numeric|nullable',
+            'logo'                      => 'file|nullable'
         ];
     }
 }

@@ -3,11 +3,10 @@ namespace App\Modules\Auth\UseCases;
 
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Resources\RouteGroup\RouteGroupResource;
-use App\Http\Resources\User\UserResource;
+use App\Http\Resources\User\AuthResource;
 use App\Models\RouteGroup;
 use App\Models\User;
 use App\Modules\User\Infra\UserRepository;
-use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\UnauthorizedException;
@@ -29,7 +28,7 @@ final class AuthLoginUseCase
         return [
             "token" => $user->createToken('browser', ['*'], $expireAt)->plainTextToken,
             "menu"  => $this->loadMenu($user),
-            'auth'  => new UserResource($user)
+            'auth'  => new AuthResource($user)
         ];
     }
 
