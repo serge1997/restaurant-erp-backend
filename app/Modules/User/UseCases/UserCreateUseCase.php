@@ -3,7 +3,7 @@ namespace App\Modules\User\UseCases;
 
 use App\Http\Requests\User\UserCreateRequest;
 use App\Models\User;
-use App\Modules\Address\Infra\AddressRepository;
+use App\Modules\Address\Infra\Repository\AddressRepository;
 use App\Modules\Role\Infra\RoleRepository;
 use App\Modules\User\Infra\UserRepository;
 use Illuminate\Support\Facades\DB;

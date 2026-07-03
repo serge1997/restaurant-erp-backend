@@ -1,5 +1,5 @@
 <?php
-namespace App\Modules\Address\Infra;
+namespace App\Modules\Address\Infra\Repository;
 
 
 use App\Foundation\Base\BaseRepository;

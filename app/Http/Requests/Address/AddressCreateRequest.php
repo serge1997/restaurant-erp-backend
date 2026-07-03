@@ -23,11 +23,12 @@ class AddressCreateRequest extends FormRequest
     {
         return [
             "address.cep"   => "required|string",
-            "address.street"    => "required|string",
-            "address.number"    => "required|numeric",
-            "address.neighborhood"  => "required|string",
-            "address.city"  => "required|string",
-            "address.state" => "required|string",
+            "address.street"    => "required_with:address.cep",
+            "address.number"    => "required_with:address.cep",
+            "address.neighborhood"  => "required_with:address.cep",
+            "address.city"  => "required_with:address.cep",
+            "address.city_id"  => "nullable|string",
+            "address.state" => "required_with:address.cep",
             "address.complement"    => "nullable|string|max:60",
         ];
     }

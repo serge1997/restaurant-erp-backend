@@ -3,16 +3,26 @@
 namespace App\Models;
 
 use App\Foundation\Base\BaseModel;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class RestaurantChain extends BaseModel
 {
-    
     protected $fillable = [
         "name",
+        "corporate_name",
         "cpf_cnpj",
-        "email",
         "phone",
-        "commercial_contact",
-        "is_active"
+        "comercial_phone",
+        "email",
+        "account_responsable_phone",
+        "account_responsable_email",
+        "account_responsable_name",
+        "is_active",
+        "created_by"
     ];
+
+    public function address(): HasOne
+    {
+        return $this->hasOne(Address::class, "model_id")->where("model", self::class);
+    }
 }

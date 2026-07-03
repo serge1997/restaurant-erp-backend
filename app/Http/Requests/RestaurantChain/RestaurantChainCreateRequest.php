@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\RestaurantChain;
 
+use App\Http\Requests\Address\AddressCreateRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
 class RestaurantChainCreateRequest extends FormRequest
@@ -21,8 +22,11 @@ class RestaurantChainCreateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return array_merge(
+            [
+
+            ],
+            AddressCreateRequest::capture()->rules()
+        );
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,6 +23,7 @@ return new class extends Migration
             $table->string("account_responsable_name");
             $table->string("account_responsable_phone");
             $table->string("account_responsable_email")->nullable();
+            $table->foreignIdFor(User::class, "created_by");
             $table->boolean("is_active")->default(false);
             $table->timestamps();
         });
