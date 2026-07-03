@@ -13,7 +13,7 @@ class RestaurantChainController extends BaseApiController
     
     public function index(PaginateRequest $paginate)
     {
-        /**  @var \App\Modules\RestaurantChain\UseCases\RestaurantChainListUseCase $useCse  */
+        /**  @var \App\Modules\RestaurantChain\UseCases\RestaurantChainListUseCase $useCase  */
         $useCase = $this->container->get(\App\Modules\RestaurantChain\UseCases\RestaurantChainListUseCase::class);
         $result = $useCase->execute($paginate);
         return $this->apiResponse("list of restaurants chain", $result);
@@ -29,7 +29,7 @@ class RestaurantChainController extends BaseApiController
 
     public function store(RestaurantChainCreateRequest $request)
     {
-        /**  @var \App\Modules\RestaurantChain\UseCases\RestaurantChainCreateUseCase $useCse  */
+        /**  @var \App\Modules\RestaurantChain\UseCases\RestaurantChainCreateUseCase $useCase  */
         $useCase = $this->container->get(\App\Modules\RestaurantChain\UseCases\RestaurantChainCreateUseCase::class);
         $useCase->execute($request);
         return $this->apiResponse(message: "rede de restaurantes criado com successo", status: 201);

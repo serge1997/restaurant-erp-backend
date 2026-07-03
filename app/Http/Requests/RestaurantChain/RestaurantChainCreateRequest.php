@@ -12,7 +12,7 @@ class RestaurantChainCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class RestaurantChainCreateRequest extends FormRequest
     {
         return array_merge(
             [
-
+                "name"                          => "required|string|max:60",
+                "corporate_name"                => "required|string|max:60",
+                "cpf_cnpj"                      => "required|string|max:24",
+                "phone"                         => "required|string|max:60",
+                "comercial_contact"               => "nullable|string|max:60",
+                "email"                         => "nullable|string|max:40",
+                "account_responsable_phone"     => "required|string|max:60",
+                "account_responsable_email"     => "nullable|string|max:40",
+                "account_responsable_name"      => "required|string|max:60",
             ],
             AddressCreateRequest::capture()->rules()
         );

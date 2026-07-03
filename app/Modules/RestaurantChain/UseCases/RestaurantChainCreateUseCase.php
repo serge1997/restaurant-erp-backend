@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 final class RestaurantChainCreateUseCase
 {
     public function __construct(
-        private readonly RestaurantChainRepository $restaurantChainRepository
+        private readonly RestaurantChainRepository $restaurantChainRepository,
     ){}
 
     public function execute(RestaurantChainCreateRequest $request)

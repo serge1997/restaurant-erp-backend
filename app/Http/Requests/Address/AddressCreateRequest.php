@@ -26,8 +26,7 @@ class AddressCreateRequest extends FormRequest
             "address.street"    => "required_with:address.cep",
             "address.number"    => "required_with:address.cep",
             "address.neighborhood"  => "required_with:address.cep",
-            "address.city"  => "required_with:address.cep",
-            "address.city_id"  => "nullable|string",
+            "address.city_id"  => "required_with:address.cep|integer",
             "address.state" => "required_with:address.cep",
             "address.complement"    => "nullable|string|max:60",
         ];

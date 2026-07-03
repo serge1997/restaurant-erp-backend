@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Foundation\Base\BaseModel;
 
-class State extends Model
+class State extends BaseModel
 {}

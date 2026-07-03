@@ -12,7 +12,7 @@ class RestaurantChain extends BaseModel
         "corporate_name",
         "cpf_cnpj",
         "phone",
-        "comercial_phone",
+        "comercial_contact",
         "email",
         "account_responsable_phone",
         "account_responsable_email",
@@ -23,6 +23,6 @@ class RestaurantChain extends BaseModel
 
     public function address(): HasOne
     {
-        return $this->hasOne(Address::class, "model_id")->where("model", self::class);
+        return $this->hasOne(Address::class, "model_id")->where("model", RestaurantChain::class);
     }
 }
