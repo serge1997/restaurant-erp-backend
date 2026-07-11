@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Foundation\Base\BaseModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Restaurant extends BaseModel
 {
@@ -11,8 +12,6 @@ class Restaurant extends BaseModel
         'name',
         'corporate_name', //razao social
         'description',
-        'address',
-        'number',
         'phone',
         'email',
         'corporate_registration', //cpf cnpj
@@ -61,5 +60,10 @@ class Restaurant extends BaseModel
                 return asset("storage/restaurants/logos/{$value}");
             }
         );
+    }
+
+    public function address(): HasOne
+    {
+        return $this->hasOne(Address::class, 'model_id')->where('model', Restaurant::class);
     }
 }

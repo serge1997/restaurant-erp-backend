@@ -23,6 +23,7 @@ class RestaurantChainResource extends JsonResource
             "phone" => $this->phone,
             "comercial_contact" => $this->comercial_contact,
             "email" => $this->email,
+            "is_active" => $this->is_active,
             "account_responsable_phone" => $this->account_responsable_phone,
             "account_responsable_email" => $this->account_responsable_email,
             "account_responsable_name" => $this->account_responsable_name,

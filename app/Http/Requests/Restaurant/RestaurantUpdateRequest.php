@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests\Restaurant;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class RestaurantUpdateRequest extends FormRequest
+class RestaurantUpdateRequest extends RestaurantCreateRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,6 +20,6 @@ class RestaurantUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return array_merge(['id' => 'integer|required'], RestaurantCreateRequest::capture()->rules());
+        return array_merge(parent::rules(), ['id' => 'integer|required']);
     }
 }

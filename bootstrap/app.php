@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\JsonResponseMetaDataMiddleware;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -32,6 +33,10 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException) {
                 $status = 404;
                 $message = 'Recurso não encontrado ' . $e->getMessage();
+            }
+
+            if ($e instanceof AuthenticationException) {
+                $status = 401;
             }
 
             return response()->json([

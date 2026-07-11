@@ -21,8 +21,11 @@ class RestaurantChainUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return array_merge(
+            RestaurantChainCreateRequest::capture()->rules(),
+            [
+                'id' => 'required|integer|exists:restaurant_chains,id',
+            ]
+        );
     }
 }

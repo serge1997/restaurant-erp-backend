@@ -27,19 +27,4 @@ class Address extends BaseModel
     {
         return $this->belongsTo(City::class, "city_id");
     }
-
-    #[Override]
-    protected static function boot()
-    {
-        static::creating(function($address){
-            if($address->city){
-                $city = City::where("name", $address->city);
-                if(!$city){
-                    throw new BadRequestException("cidade informada nao encontrada. Entre em contato com suporte");
-                }
-                $address->city_id = $city->id;
-            }
-        });
-        return parent::boot();
-    }
 }

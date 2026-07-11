@@ -11,7 +11,7 @@ final class RestaurantChainUpdateUseCase
         private readonly RestaurantChainRepository $restaurantChainRepository
     ){}
 
-    public function update(RestaurantChainUpdateRequest $request)
+    public function execute(RestaurantChainUpdateRequest $request)
     {
         $payload = $request->validated();
         $restaurantChain = $this->restaurantChainRepository->find($request->id);

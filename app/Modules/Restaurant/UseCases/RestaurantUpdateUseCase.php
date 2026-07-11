@@ -3,8 +3,10 @@ namespace App\Modules\Restaurant\UseCases;
 
 use App\Http\Requests\restaurant\RestaurantStoreFileRequest;
 use App\Http\Requests\Restaurant\RestaurantUpdateRequest;
+use App\Models\Restaurant;
 use App\Modules\Restaurant\Exceptions\RestaurantNotFoundExecption;
 use App\Modules\Restaurant\Repository\RestaurantRepository;
+use Illuminate\Support\Facades\DB;
 
 final class RestaurantUpdateUseCase extends \App\Foundation\Base\BaseUseCase
 {
@@ -14,11 +16,19 @@ final class RestaurantUpdateUseCase extends \App\Foundation\Base\BaseUseCase
 
     public function execute(RestaurantUpdateRequest $request)
     {
+        $payload = $request->validated();
         $restaurant = $this->repository->find($request->id);
         if (!$restaurant) {
             throw new RestaurantNotFoundExecption;
         }
-        $this->repository->update($restaurant, $request->validated());
+        DB::transaction(function() use($restaurant, $payload){
+            $address = [
+                "model" => Restaurant::class,
+                ...$payload['address']
+            ];
+            $restaurant->address ? $restaurant->address()->update($address) : $restaurant->address()->create($address);
+            $this->repository->update($restaurant, $payload);
+        });
     }
 
     public function executeFile(RestaurantStoreFileRequest $request)
@@ -43,6 +53,9 @@ final class RestaurantUpdateUseCase extends \App\Foundation\Base\BaseUseCase
             $payload["certificate"]->storeAs(storage_path("app/public/restaurants/certificate/{$avatarName}"));
             $payload['logo'] = $avatarName;
         }
-        $this->repository->update($restaurant, $payload);
+        DB::transaction(function () use ($restaurant, $payload) {
+            $restaurant->address()->update($payload['address']);
+            $this->repository->update($restaurant, $payload);
+        });
     }
 }

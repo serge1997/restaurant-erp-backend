@@ -3,6 +3,7 @@ namespace App\Modules\Restaurant\UseCases;
 
 use App\Http\Requests\Restaurant\RestaurantCreateRequest;
 use App\Modules\Restaurant\Repository\RestaurantRepository;
+use Illuminate\Support\Facades\DB;
 
 final class RestaurantCreateUseCase extends \App\Foundation\Base\BaseUseCase
 {
@@ -21,6 +22,9 @@ final class RestaurantCreateUseCase extends \App\Foundation\Base\BaseUseCase
                 
             $payload['logo'] = $avatarName;
         }
-        $this->restaurantRepository->save($payload);
+        DB::transaction(function () use ($payload) {
+            $restaurant = $this->restaurantRepository->save($payload);
+            $restaurant->address()->create($payload['address']);
+        });
     }
 }
