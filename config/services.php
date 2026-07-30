@@ -34,5 +34,6 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'vue_app' => env('VUE_APP'),
+    'registration_token_expired_in' => env('REGISTRATION_TOKEN_EXPIRED_IN', 24)
 ];

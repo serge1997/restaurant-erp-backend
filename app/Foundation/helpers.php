@@ -21,4 +21,11 @@ if (!function_exists('formatMinutes')){
             default => "+{$dayDiff} dias"
         };
     }
+
+   if(!function_exists("removeMasks")){
+    function removeMasks(string $value): string
+    {
+        return preg_replace('/[^a-z0-9]/i', '', $value);
+    }
+   }
 }

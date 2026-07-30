@@ -19,4 +19,9 @@ class PreRegistrationException extends \Exception
     {
         return new self("Já existe um registro com esse e-mail", 409);
     }
+
+    public static function tokenExpired(): self
+    {
+        return new self("Seu token de confirmaçao venceu", 403);
+    }
 }

@@ -34,7 +34,6 @@ class User extends Authenticatable
         'email',
         'cpf',
         'password',
-        'is_active',
         'gender',
         'birth_date',   
         'avatar',      

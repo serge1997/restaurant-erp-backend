@@ -23,9 +23,12 @@ class BaseModel extends Model
         "is_active" => "boolean"
     ];  
 
-    public function nameInicial(): string
+    public function nameInicial(?string $prop = null): string
     {
-        $name = explode(" ", $this->name);
+        if(!$prop) {
+            $prop = $this->name;
+        }
+        $name = explode(" ", $prop);
         if (count($name) == 1) {
             $inicial = $name[0][0]. $name[0][1];
             return strtoupper($inicial);
@@ -38,15 +41,17 @@ class BaseModel extends Model
     {
         parent::boot();
         static::creating(function(BaseModel $model){
-            /** @var User $auth */
-            $auth = $model->auth();
-            if ($model->hasRestaurantFilter()) {
-                //set auth user restaurant id
-                $model->restaurant_id = $auth->restaurant_id;
-            }
-            if ($model->hasCreatedBy()) {
-                //set auth user id
-                $model->created_by = $auth->id;
+            if($model->hasCreatedBy() || $model->hasRestaurantFilter()){
+                /** @var User $auth */
+                $auth = $model->auth();
+                if ($model->hasRestaurantFilter()) {
+                    //set auth user restaurant id
+                    $model->restaurant_id = $auth->restaurant_id;
+                }
+                if ($model->hasCreatedBy()) {
+                    //set auth user id
+                    $model->created_by = $auth->id;
+                }
             }
         });
     }
