@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Foundation\Base\BaseModel;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class RestaurantChain extends BaseModel
@@ -24,5 +25,10 @@ class RestaurantChain extends BaseModel
     public function address(): HasOne
     {
         return $this->hasOne(Address::class, "model_id")->where("model", RestaurantChain::class);
+    }
+
+    public function restaurants(): HasMany
+    {
+        return $this->hasMany(Restaurant::class, "chain_id");
     }
 }

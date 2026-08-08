@@ -4,8 +4,11 @@ namespace App\Modules\Auth\UseCases;
 use App\Http\Requests\Auth\AuthLoginRequest;
 use App\Http\Resources\RouteGroup\RouteGroupResource;
 use App\Http\Resources\User\AuthResource;
+use App\Models\PreRegistration;
+use App\Models\Role;
 use App\Models\RouteGroup;
 use App\Models\User;
+use App\Modules\PreRegistration\Infra\Repository\PreRegistrationRepository;
 use App\Modules\User\Infra\UserRepository;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +17,8 @@ use Illuminate\Validation\UnauthorizedException;
 final class AuthLoginUseCase
 {
     public function __construct(
-        private readonly UserRepository $userRepository
+        private readonly UserRepository $userRepository,
+        private readonly PreRegistrationRepository $preRegistrationRepository
     ){}
 
     public function execute(AuthLoginRequest $request)
@@ -25,6 +29,11 @@ final class AuthLoginUseCase
             throw new UnauthorizedException("usuario ou senha invalido", 401);
         }
         $expireAt = Carbon::now()->addMinutes(60);
+        $preRegistration = $this->preRegistrationRepository->findFirstBy(['account_responsable_email'], [$user->username]);
+        if($preRegistration instanceof PreRegistration && $preRegistration->is_confirmed){
+            $user->assignRole(Role::findByName('admin', 'api'));
+        }
+        $user->tokens()->delete();
         return [
             "token" => $user->createToken('browser', ['*'], $expireAt)->plainTextToken,
             "menu"  => $this->loadMenu($user),

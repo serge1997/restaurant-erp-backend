@@ -22,6 +22,14 @@ trait ModelTrait
         return !$has ? false : true;
     }
 
+    public function hasChainFilter(): bool
+    {
+        $has = Arr::first($this->fillable, function ($value) {
+            return $value === "chain_id";
+        });
+        return !$has ? false : true;
+    }
+
     public function hasRestaurantFilter(): bool
     {
         $has = Arr::first($this->fillable, function ($value) {

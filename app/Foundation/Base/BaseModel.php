@@ -16,6 +16,7 @@ class BaseModel extends Model
     
     public const GENERATE_CODE_TENTATIVE = 3;
     public const DB_DATE_FORMAT = 'Y-m-d';
+    public bool $asGuestUser = false;
 
     protected $casts = [
         "cost"  => "float",
@@ -41,16 +42,16 @@ class BaseModel extends Model
     {
         parent::boot();
         static::creating(function(BaseModel $model){
-            if($model->hasCreatedBy() || $model->hasRestaurantFilter()){
-                /** @var User $auth */
-                $auth = $model->auth();
-                if ($model->hasRestaurantFilter()) {
-                    //set auth user restaurant id
-                    $model->restaurant_id = $auth->restaurant_id;
-                }
-                if ($model->hasCreatedBy()) {
-                    //set auth user id
-                    $model->created_by = $auth->id;
+            if($model->asGuestUser === false){
+                if($model->hasCreatedBy() || $model->hasRestaurantFilter()){
+                    /** @var User $auth */
+                    $auth = $model->auth();
+                    if ($model->hasRestaurantFilter()) {
+                        $model->restaurant_id = $auth->restaurant_id;
+                    }
+                    if ($model->hasCreatedBy()) {
+                        $model->created_by = $auth->id;
+                    }
                 }
             }
         });

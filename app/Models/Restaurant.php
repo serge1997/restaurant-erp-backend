@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Foundation\Base\BaseModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Restaurant extends BaseModel
 {
     protected $fillable = [
+        'chain_id',
         'name',
         'corporate_name', //razao social
         'description',
@@ -65,5 +67,15 @@ class Restaurant extends BaseModel
     public function address(): HasOne
     {
         return $this->hasOne(Address::class, 'model_id')->where('model', Restaurant::class);
+    }
+
+    public function chain(): BelongsTo
+    {
+        return $this->belongsTo(RestaurantChain::class, 'chain_id');
+    }
+
+    public function sameChainWith(User $user): bool
+    {
+        return $this->chain_id === $user->restaurant->chain_id;
     }
 }

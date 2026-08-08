@@ -6,6 +6,7 @@ use App\Foundation\Base\BaseApiController;
 use App\Http\Requests\PaginateRequest;
 use App\Http\Requests\User\UserCreateRequest;
 use App\Http\Requests\User\UserUpdateRequest;
+use App\Models\Restaurant;
 use App\Models\User;
 
 class UserController extends BaseApiController
@@ -41,5 +42,13 @@ class UserController extends BaseApiController
         $useCase = $this->container->get(\App\Modules\User\UseCases\UserUpdateUseCase::class);
         $useCase->execute($request);
         return $this->apiResponse(message: "usuario alterado com successo", status: 200);
+    }
+
+    public function switchRestaurant(Restaurant $restaurant)
+    {
+        /**  @var \App\Modules\User\UseCases\UserUpdateUseCase $useCse  */
+        $useCase = $this->container->get(\App\Modules\User\UseCases\UserUpdateUseCase::class);
+        $response = $useCase->switchRestaurant($restaurant);
+        return $this->apiResponse(message: "ambiente de unidade trocado com successo", status: 200, data: $response);
     }
 }

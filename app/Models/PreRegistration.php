@@ -31,9 +31,9 @@ class PreRegistration extends BaseModel
         "confirmation_token_expired_at" => "datetime"
     ];
 
-    public function asUser(): array
+    public function asUser(): User
     {
-        return [
+        $user =  new User([
             'name'              => $this->account_responsable_name,
             'username'          => $this->account_responsable_email,
             'phone'             => $this->account_responsable_phone,
@@ -41,15 +41,17 @@ class PreRegistration extends BaseModel
             'cpf'               => $this->account_responsable_cpf,    
             'is_active'         => true,
             'gender'            => $this->gender
-        ];
+        ]);
+        $user->asGuestUser = true;
+        return $user;
     }
 
-    public function asCompany(): array
+    public function asCompany(): RestaurantChain
     {
-        return [
+        $chain =  new RestaurantChain([
             "name"                              => $this->name,
             "corporate_name"                    => $this->corporate_name,
-            "cpf_cnpj"                          => $this->cpf_cnpj,
+            "cpf_cnpj"                           => $this->cnpj,
             "phone"                             => $this->phone,
             "comercial_contact"                 => $this->comercial_contact,
             "email"                             => $this->email,
@@ -58,7 +60,23 @@ class PreRegistration extends BaseModel
             "account_responsable_name"          => $this->account_responsable_name,
             "is_active"                         => false,
             'is_chain'                          => $this->is_chain
-        ];
+        ]);
+        $chain->asGuestUser = true;
+        return $chain;
+    }
+
+    public function asRestaurant(): Restaurant
+    {
+        $restaurant = new Restaurant([
+            'name'                      => $this->name,
+            'corporate_name'            => $this->corporate_name,
+            'phone'                     => $this->comercial_contact,
+            'email'                     => $this->email ?? $this->account_responsable_email,
+            'corporate_registration'    => $this->cnpj, //cpf cnpj
+            'is_active'                 => false
+        ]);
+        $restaurant->asGuestUser = true;
+        return $restaurant;
     }
 
     public static function generateRegistrationConfirmationToken(): string

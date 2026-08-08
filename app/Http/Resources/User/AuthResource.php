@@ -18,11 +18,16 @@ class AuthResource extends JsonResource
             ...parent::toArray($request),
             'birth_date'    => $this->birth_date?->format("d/m/Y"),
             'inicial'   => $this->nameInicial(),
+            'restaurant_id' => $this->restaurant->id,
             'restaurant'    => [
                 'id'    => $this->restaurant_id,
                 'name'  => $this->restaurant->name,
                 'logo'  => $this->restaurant->logo,
-                'inicial'   => $this->restaurant->nameInicial()
+                'inicial'   => $this->restaurant->nameInicial(),
+                'chain' => [
+                    'id' => $this->restaurant->chain?->id,
+                    'name' => $this->restaurant->chain?->name
+                ]
             ]
         ];
     }

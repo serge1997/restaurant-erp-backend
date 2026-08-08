@@ -3,6 +3,7 @@ namespace App\Foundation\Base;
 
 use App\Foundation\Contracts\BaseRepositoryInterface;
 use App\Http\Requests\PaginateRequest;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,6 +18,10 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     protected string $table_name {
         get => $this->eloquent()->getTable();
+    }
+
+    public ?User $auth {
+        get => auth()->user();
     }
 
     public function __construct()
@@ -103,15 +108,23 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function whereRestaurantId()
     {
-        if ($this->eloquent()->hasRestaurantFilter()){
-            $this->getQuery()->where("{$this->table_name}.restaurant_id", 1);
+        if ($this->eloquent()->hasRestaurantFilter() && $this->auth instanceof User){
+            $this->getQuery()->where("{$this->table_name}.restaurant_id", $this->auth->activeRestaurantId());
+        }
+        return $this;
+    }
+
+    public function whereChainId()
+    {
+        if ($this->eloquent()->hasChainFilter() && $this->auth instanceof User){
+            $this->getQuery()->where("{$this->table_name}.chain_id", $this->auth->restaurant->chain_id);
         }
         return $this;
     }
 
     public function paginate(PaginateRequest $paginate)
     {
-        return $this->whereRestaurantId()->baseQuerySearch($paginate)->get($paginate);
+        return $this->whereRestaurantId()->whereChainId()->baseQuerySearch($paginate)->get($paginate);
     }
     public function get(PaginateRequest $paginate)
     {

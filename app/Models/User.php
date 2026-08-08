@@ -21,6 +21,8 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasApiTokens, ModelTrait;
 
+    public bool $asGuestUser = false;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -39,7 +41,8 @@ class User extends Authenticatable
         'avatar',      
         'is_active',
         'last_login_at',
-        'email_verified_at'
+        'email_verified_at',
+        'switch_restaurant_id'
     ];
 
     /**
@@ -157,11 +160,23 @@ class User extends Authenticatable
         return $this->belongsTo(Restaurant::class, 'restaurant_id');
     }
 
+    public function switchRestaurant(): BelongsTo
+    {
+        return $this->belongsTo(Restaurant::class, 'switch_restaurant_id');
+    }
+
     protected static function boot()
     {
         parent::boot();
         static::creating(function(User $user){
-            $user->restaurant_id = $user->auth()->id;
+            if($user->asGuestUser === false){
+                $user->restaurant_id = $user->auth()->id;   
+            }
         });
+    }
+
+    public function activeRestaurantId(): int
+    {
+        return $this->switch_restaurant_id ?? $this->restaurant_id;
     }
 }

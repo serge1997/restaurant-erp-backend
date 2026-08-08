@@ -21,8 +21,6 @@ class Address extends BaseModel
         'model_id'
     ];
 
-    protected $appends = ["city"];
-
     public function city(): BelongsTo
     {
         return $this->belongsTo(City::class, "city_id");

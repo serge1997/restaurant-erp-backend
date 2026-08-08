@@ -9,5 +9,6 @@ Route::controller(UserController::class)->group(function(){
         Route::get("/{user}", "show")->name("show");
         Route::put("/", "update")->name("update");
         Route::delete("/{id}", "delete")->name("delete");
+        Route::put("/switchRestaurant/{restaurant}", "switchRestaurant")->name("switchRestaurant");
     });
 });

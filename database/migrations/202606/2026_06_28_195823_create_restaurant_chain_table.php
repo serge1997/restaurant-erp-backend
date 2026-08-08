@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string("account_responsable_name");
             $table->string("account_responsable_phone");
             $table->string("account_responsable_email")->nullable();
-            $table->foreignIdFor(User::class, "created_by");
+            $table->foreignIdFor(User::class, "created_by")->nullable()->constrained();
             $table->boolean("is_active")->default(false);
             $table->timestamps();
         });
@@ -34,6 +34,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('restaurant_chain');
+        Schema::dropIfExists('restaurant_chains');
     }
 };
