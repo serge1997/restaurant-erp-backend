@@ -65,7 +65,7 @@ abstract class BaseRepository implements BaseRepositoryInterface
     {
         if ($this->eloquent()->hasRestaurantFilter()){
             return $this->eloquent()->query()
-                ->where("{$this->table_name}.restaurant_id", 1);
+                ->where("{$this->table_name}.restaurant_id", $this->auth->activeRestaurantId());
         }
         return $this->eloquent()->query();
     }
