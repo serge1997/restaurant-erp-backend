@@ -26,7 +26,7 @@ class ProductRepostory extends BaseRepository
     }
 
     #[Override]
-    public function findAll(PaginateRequest $paginate)
+    public function findAll(?PaginateRequest $paginate = null)
     {
         $query = $this->getQuery();
         if ($category = (int)$paginate->category_id) {

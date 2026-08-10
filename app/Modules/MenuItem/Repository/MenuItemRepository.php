@@ -22,7 +22,7 @@ class MenuItemRepository extends BaseRepository
         return app(MenuItem::class);
     }
 
-    public function findAll(PaginateRequest $paginate)
+    public function findAll(?PaginateRequest $paginate = null)
     {
         if (!empty($paginate->categories)) {
             $this->getQuery()->whereIn("category_id", $paginate->categories);

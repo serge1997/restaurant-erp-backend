@@ -27,7 +27,7 @@ class StockMovmentRepository extends BaseRepository
     {
         return $this->model->where("product_id", $product->id)->latest()->first();
     }
-    public function findAll(PaginateRequest $paginate)
+    public function findAll(?PaginateRequest $paginate  = null)
     {
         $this->getQuery()->selectRaw("DISTINCT(stock_movments.id), stock_movments.*");
         if ($paginate->products) {

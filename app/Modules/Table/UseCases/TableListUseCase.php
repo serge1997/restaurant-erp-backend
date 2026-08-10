@@ -46,4 +46,9 @@ final class TableListUseCase extends BaseUseCase
     {
         return TableResource::collection($this->tableRepository->findAllAvailable());
     }
+
+    public function listAllWithOrderStatus()
+    {
+        return $this->tableRepository->findAllWithOrderStatus();
+    }
 }

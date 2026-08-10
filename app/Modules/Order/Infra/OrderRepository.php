@@ -26,13 +26,14 @@ class OrderRepository extends BaseRepository
         return app(Order::class);
     }
 
-    public function findAll(PaginateRequest $paginate)
+    public function findAll(?PaginateRequest $paginate = null)
     {
     
         $this->getQuery()->select("orders.*")
             ->where('business_day', Order::getBusinessDay());
-        if ($status = filter_var($paginate->status, FILTER_SANITIZE_NUMBER_INT)) {
-            $this->getQuery()->where('status', $status);
+        if ($status = $paginate->status) {
+            $status = is_array($status) ? $status : [$status];
+            $this->getQuery()->whereIn('status', $status);
         }
         if ($paginate->search){
             $this->getQuery()
@@ -121,16 +122,17 @@ class OrderRepository extends BaseRepository
                 ->get();
     }
 
-    public function findAllCanceled(): Collection
+    public function findAllCanceled(?Carbon $date = null): Collection
     {
+        $businessDay = Order::getBusinessDay($date);
         return $this->newQuery()->where('status', OrderStatusEnum::CANCELLED->value)
-            ->whereDate('business_day', $this->businessDay)
+            ->whereDate('business_day', $businessDay)
                 ->get();
     }
 
-    public function sumRevenueByBusinessDay()
+    public function sumRevenueByBusinessDay(?Carbon $date = null)
     {
-        $businessDay = Order::getBusinessDay();
+        $businessDay = Order::getBusinessDay($date);
         return $this->newQuery()
             ->selectRaw("SUM(oi.quantity * oi.unit_price) as revenue")
                 ->join("order_items as oi", "oi.order_id", "=", "orders.id")
@@ -141,6 +143,25 @@ class OrderRepository extends BaseRepository
     public function findAllByBusinessDay(PaginateRequest $paginate)
     {
         return $this->newQuery()->where('business_day', Order::getBusinessDay())->get();
+    }
+
+    public function mediumTicket(?Carbon $date = null)
+    {
+        $businessDay = Order::getBusinessDay($date);
+        return $this->newQuery()
+            ->selectRaw("AVG(oi.quantity * oi.unit_price) as average")
+                ->join("order_items as oi", "oi.order_id", "=", "orders.id")
+                    ->whereDate('business_day', $businessDay)
+                        ->get();
+    }
+
+    public function activeWaiters()
+    {
+        return $this->newQuery()
+            ->selectRaw("count(distinct orders.waiter_id) as waiters")
+                ->join("order_items as oi", "oi.order_id", "=", "orders.id")
+                    ->whereDate('business_day', $this->businessDay)
+                        ->get();
     }
 
 }

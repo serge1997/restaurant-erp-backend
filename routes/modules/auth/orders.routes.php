@@ -7,6 +7,7 @@ Route::controller(OrderController::class)->group(function(){
         Route::get("/",  "index")->name("index");
         Route::post("/", "store")->name("store");
         Route::get("/history", "history")->name("history");
+        Route::get("/homeKpis", "homeKpis")->name("homeKpis");
         Route::get("/{order}", "show")->name("show");
         Route::put("/", "update")->name("update");
         Route::delete("/{id}", "delete")->name("delete");

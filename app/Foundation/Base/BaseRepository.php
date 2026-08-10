@@ -35,8 +35,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->eloquent()->create($data);
     }
 
-    public function findAll(PaginateRequest $paginate)
+    public function findAll(?PaginateRequest $paginate = null)
     {
+        if(!$paginate) {
+            return $this->newQuery()->get();
+        }
         return $this->paginate($paginate);
     }
 
@@ -63,11 +66,14 @@ abstract class BaseRepository implements BaseRepositoryInterface
 
     public function newQuery(): Builder
     {
+        $query = $this->eloquent()->query();
         if ($this->eloquent()->hasRestaurantFilter()){
-            return $this->eloquent()->query()
-                ->where("{$this->table_name}.restaurant_id", $this->auth->activeRestaurantId());
+            $query->where("{$this->table_name}.restaurant_id", $this->auth->activeRestaurantId());
         }
-        return $this->eloquent()->query();
+        if($this->eloquent()->hasChainFilter()){
+            $query->where("{$this->table_name}.chain_id", $this->auth->restaurant->chain_id);
+        }
+        return $query;
     }
 
     public function getQuery(): Builder
@@ -150,7 +156,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
         foreach ($columns as $key => $column) {
             $notFilterColumn = explode(":", $column);
             if (count($notFilterColumn) == 2) {
-                $filters[] = [$this->table_name . "." .$notFilterColumn[0], '<>', $values[$key]];
+                if($notFilterColumn[1] == "like"){
+                    $filters[] = [$this->table_name . "." .$notFilterColumn[0], 'like', "%{$values[$key]}%"];
+                }else{
+                    $filters[] = [$this->table_name . "." .$notFilterColumn[0], '<>', $values[$key]];
+                }
             }else{
                 $filters[] = [$this->table_name . "." .$column, $values[$key]];
             }

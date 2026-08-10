@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 interface BaseRepositoryInterface
 {
     public function save(array $data): BaseModel|Model|Authenticatable;
-    public function findAll(PaginateRequest $paginate);
+    public function findAll(?PaginateRequest $paginate = null);
 
     public function find($id);
     public function findByIds(array $ids);

@@ -64,4 +64,23 @@ class TableRepository extends BaseRepository
                                 ->get();
           
     }
+
+    public function findAllWithOrderStatus()
+    {
+        return $this->newQuery()
+            ->selectRaw("
+                tables.id,
+                tables.number,
+                CASE
+                    WHEN orders.status IS NULL OR orders.status IN (1, 2, 3, 5) then 'open'
+                    ELSE 'closed' end as status
+        ")
+            ->leftJoin('orders', function ($join) {
+                $join->on('orders.id', '=', DB::raw('(
+                    SELECT MAX(id)
+                    FROM orders
+                    WHERE orders.table_id = tables.id
+                )'));
+            })->get();
+    }
 }

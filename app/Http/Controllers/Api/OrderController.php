@@ -92,4 +92,12 @@ class OrderController extends BaseApiController
         $response = $useCase->history($paginate);
         return $this->apiResponse("querying order history", $response);
     }
+
+    public function homeKpis()
+    {
+        /** @var OrderListUseCase $useCase */
+        $useCase = $this->container->get(OrderListUseCase::class);
+        $response = $useCase->homeKpis();
+        return $this->apiResponse("order kpis", $response);
+    }
 }

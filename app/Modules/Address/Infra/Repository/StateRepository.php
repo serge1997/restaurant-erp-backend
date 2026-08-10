@@ -12,7 +12,7 @@ class StateRepository extends BaseRepository
         return new State();
     }
 
-    public function findAll(PaginateRequest $request)
+    public function findAll(?PaginateRequest $request = null)
     {
         return $this->getQuery()->get();
     }
