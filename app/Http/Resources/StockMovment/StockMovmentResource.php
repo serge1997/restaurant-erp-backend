@@ -42,8 +42,8 @@ class StockMovmentResource extends BaseJsonResource
                 "name"  => $this->product->name,
                 "unit_measure_label" => $this->product->category->unit_measure->purchaseRequestLabel(),
                 "db_unit_size_label"    => $this->product->category->unit_measure->getLabel(),
-                "in_stock_label"   => $this->product->getInStockLabel($this->quantity),
-                "in_stock_label_severity"   => $this->product->getInStockLabelSeverity($this->quantity)
+                "in_stock_label"   => $this->product->getInStockLabel($this->current_stock),
+                "in_stock_label_severity"   => $this->product->getInStockLabelSeverity($this->current_stock)
             ],
             'details' => [],
             'moved_at' => [

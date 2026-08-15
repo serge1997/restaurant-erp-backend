@@ -4,6 +4,8 @@ namespace App\Models;
 
 use App\Foundation\Base\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Str;
 
 class Product extends BaseModel
@@ -75,5 +77,11 @@ class Product extends BaseModel
             return "tag-green-dark";
         }
         return "tag-amber";
+    }
+
+    public function unresolvedAlert(): MorphOne
+    {
+        return $this->morphOne(Alert::class, 'alertable')
+            ->where('is_resolved', false);
     }
 }

@@ -79,4 +79,9 @@ enum StockMovmentReferenceTypeEnum: int
             self::DEVOLUTION_SUPPLIER->value, self::SALE->value, self::WASTE->value, self::MANUAL_OUT->value
         ];
     }
+
+    public function isIn(): bool
+    {
+        return in_array($this->value, $this->in());
+    }
 }

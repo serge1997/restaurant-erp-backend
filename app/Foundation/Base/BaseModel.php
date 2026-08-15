@@ -47,7 +47,7 @@ class BaseModel extends Model
                     /** @var User $auth */
                     $auth = $model->auth();
                     if ($model->hasRestaurantFilter()) {
-                        $model->restaurant_id = $auth->restaurant_id;
+                        $model->restaurant_id = $auth->activeRestaurantId();
                     }
                     if ($model->hasCreatedBy()) {
                         $model->created_by = $auth->id;

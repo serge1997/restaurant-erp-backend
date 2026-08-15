@@ -29,7 +29,7 @@ final class StockMovmentCreateUseCase
         if ($movmentReferenceType->isPurchase()){
             $reference = $this->purchaseRequisitionRepository->find($payload["reference_id"]);
         }
-        if ($movmentReferenceType->isPurchase() || $movmentReferenceType->isSale() && !$reference) {
+        if (($movmentReferenceType->isPurchase() || $movmentReferenceType->isSale()) && !$reference) {
             //check this for manual or ajuste
             throw new StockMovementException("Referencia nao encontrada", 400);
         }

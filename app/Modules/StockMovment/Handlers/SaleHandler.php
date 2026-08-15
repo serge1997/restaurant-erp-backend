@@ -26,9 +26,11 @@ class SaleHandler implements StockMovmentHandlerInterface
         $reference->refresh();
         $reference->items->each(function(OrderItem $item) use(&$menuItemSheets, &$itensQuantities, $payloadMenuItemIds, $payloadQuantities) {
             if ($item->menuItem->isEnableTechnicalheet() && $item->menuItem->technicalSheet && in_array($item->menu_item_id, $payloadMenuItemIds)){
-                $itemIndex = array_search($item->menu_item_id, $payloadMenuItemIds);
-                $menuItemSheets[] = $item->menuItem->technicalSheet;
-                $itensQuantities[$item->menu_item_id] = $payloadQuantities[$itemIndex];
+                if(!in_array($item->menu_item_id, array_keys($itensQuantities))){
+                    $itemIndex = array_search($item->menu_item_id, $payloadMenuItemIds);
+                    $menuItemSheets[] = $item->menuItem->technicalSheet;
+                    $itensQuantities[$item->menu_item_id] = $payloadQuantities[$itemIndex];
+                }
             }
         });
         if ($menuItemSheets != []){

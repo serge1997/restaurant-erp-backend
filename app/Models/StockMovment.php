@@ -5,9 +5,12 @@ namespace App\Models;
 use App\Foundation\Base\BaseModel;
 use App\Modules\StockMovment\Enums\StockMovmentDirectionEnum;
 use App\Modules\StockMovment\Enums\StockMovmentReferenceTypeEnum;
+use App\Observers\StockMovmentObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Override;
 
+#[ObservedBy(StockMovmentObserver::class)]
 class StockMovment extends BaseModel
 {
     
@@ -161,11 +164,11 @@ class StockMovment extends BaseModel
 
     public function inStockLabel(): string
     {
-        $quantity = $this->quantity;
+        $quantity = $this->current_stock;
         if ($quantity < 1) {
             return "Indisponivél";
         }
-        if($quantity > $this->product->min_quantity || $quantity === $this->product->min_quantity){
+        if($quantity >= $this->product->min_quantity){
             return "Disponivél";
         }
         return "Baixo";
@@ -193,6 +196,32 @@ class StockMovment extends BaseModel
                 $model->created_by = $model->auth()->id;
             }
         });
+    }
+
+    public function quantityIsAlertable(): bool
+    {
+        return $this->product->min_quantity > $this->current_stock;
+    }
+
+    public function stockIsEmpty()
+    {
+        return $this->current_stock == 0;
+    }
+
+    public function stockIsCritical(): bool
+    {
+        $unitMeasure = $this->product->category->unit_measure;
+        $isCritical = $this->current_stock > 0;
+        if($unitMeasure->isMl()){
+            return $isCritical && $this->current_stock < 200;
+        }
+        if($unitMeasure->isUnit()){
+            return $isCritical && $this->current_stock <= 3;
+        }
+        if($unitMeasure->isKg()){
+            return $isCritical && $this->current_stock <= 1;
+        }
+        return false;
     }
 
     

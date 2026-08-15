@@ -100,7 +100,7 @@ final class OrderCancelUseCase
             if($payload['restock'] && $item->menuItem->technicalSheet && $item->menuItem->isEnableTechnicalheet()){
                 $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository);
                 $handler = $stockMovementHandler->handler(StockMovmentReferenceTypeEnum::DEVOLUTION_SALE);
-                $handler->handle($order, $payload);
+                $handler->handle($item, $payload);
             }
         });
     }
