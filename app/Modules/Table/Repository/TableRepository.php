@@ -51,7 +51,7 @@ class TableRepository extends BaseRepository
             DB::raw("SUM(oi.unit_price * oi.quantity) as total_price"),
             DB::raw("SUM(oi.quantity) as total_items"),
             DB::raw("case 
-                    when TIMESTAMPDIFF(minute, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')) < 60 then concat(TIMESTAMPDIFF(minute, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')), 'min')
+                    when TIMESTAMPDIFF(minute, o.created_at, current_timestamp()) < 60 then concat(TIMESTAMPDIFF(minute, o.created_at, current_timestamp()), 'min')
                     when TIMESTAMPDIFF(minute, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')) >= 60 and TIMESTAMPDIFF(minute, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')) < 1440 then concat(TIMESTAMPDIFF(hour, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')), 'H')
                     else concat(FLOOR(TIMESTAMPDIFF(minute, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')) / 1440), 'dia(s)')
                 end as since
