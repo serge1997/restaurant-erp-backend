@@ -477,7 +477,10 @@
               <span class="qty-badge">{{ number_format($item->ordered_quantity, 0, ',', '.') }}</span>
             </td>
             <td class="center">
-              <span class="qty-badge">{{ number_format($item->received_quantity / $item->product->unit_contain ?? 0, 0, ',', '.') }}</span>
+              @php
+                $quantity = $item->product->unit_contain ?? 1;
+              @endphp
+              <span class="qty-badge">{{ number_format($item->received_quantity / $quantity, 0, ',', '.') }}</span>
             </td>
             <td class="right mono">
               @if($item->cost ?? null)
