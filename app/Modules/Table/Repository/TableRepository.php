@@ -4,6 +4,8 @@ namespace App\Modules\Table\Repository;
 use App\Foundation\Base\BaseRepository;
 use App\Models\Table;
 use App\Modules\Order\Enums\OrderStatusEnum;
+use App\Modules\Reservation\Enums\ReservationStatusEnum;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TableRepository extends BaseRepository
@@ -41,7 +43,7 @@ class TableRepository extends BaseRepository
 
     public function findAllWithOrders()
     {
-        
+
         return $this->getQuery()->select(
             "o.id as order_id",
             "o.customer_name",
@@ -50,7 +52,7 @@ class TableRepository extends BaseRepository
             "w.name as waiter_name",
             DB::raw("SUM(oi.unit_price * oi.quantity) as total_price"),
             DB::raw("SUM(oi.quantity) as total_items"),
-            DB::raw("case 
+            DB::raw("case
                     when TIMESTAMPDIFF(minute, o.created_at, current_timestamp()) < 60 then concat(TIMESTAMPDIFF(minute, o.created_at, current_timestamp()), 'min')
                     when TIMESTAMPDIFF(minute, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')) >= 60 and TIMESTAMPDIFF(minute, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')) < 1440 then concat(TIMESTAMPDIFF(hour, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')), 'H')
                     else concat(FLOOR(TIMESTAMPDIFF(minute, o.created_at, CONVERT_TZ(NOW(), '+00:00', '-03:00')) / 1440), 'dia(s)')
@@ -63,7 +65,7 @@ class TableRepository extends BaseRepository
                         ->whereIn("o.status", [OrderStatusEnum::OPEN->value, OrderStatusEnum::DELIVERED->value, OrderStatusEnum::SENT->value])
                             ->groupBy("o.id", "o.customer_name", "tables.id", "tables.number")
                                 ->get();
-          
+
     }
 
     public function findAllWithOrderStatus()
@@ -83,5 +85,17 @@ class TableRepository extends BaseRepository
                     WHERE orders.table_id = tables.id
                 )'));
             })->get();
+    }
+
+    public function findAllForReservation(Request $request)
+    {
+        $query = $this->getQuery()
+                ->whereNotIn("id", function($query) use($request){
+                        $query->select('table_id')
+                            ->from('reservations')
+                                ->where('date', $request->date);
+                    })
+                        ->get();
+        return $query;
     }
 }

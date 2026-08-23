@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Api\Controllers\ReservationController;
+use App\Http\Controllers\Api\ReservationController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(ReservationController::class)->group(function(){

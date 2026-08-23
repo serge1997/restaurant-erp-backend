@@ -11,7 +11,7 @@ class ReservationCreateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class ReservationCreateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'customer'              => 'required|string',
+            'state_registration'    => 'nullable|string',
+            'phone'                 => 'nullable|string',
+            'email'                 => 'nullable|string',
+            'date'                  => 'required|date',
+            'hour'                  => 'required|string',
+            'quantity_of_person'    => 'required|integer',
+            'observation'           => 'nullable|string',
+            'table_id'              => 'required|integer',
+            'waiter_id'             => 'nullable|integer',
+            'duration'              => 'nullable|string'
         ];
     }
 }

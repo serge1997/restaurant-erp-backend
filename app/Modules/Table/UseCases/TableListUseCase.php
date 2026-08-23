@@ -6,6 +6,7 @@ use App\Http\Requests\PaginateRequest;
 use App\Http\Resources\Table\TableResource;
 use App\Models\Table;
 use App\Modules\Table\Repository\TableRepository;
+use Illuminate\Http\Request;
 
 final class TableListUseCase extends BaseUseCase
 {
@@ -50,5 +51,12 @@ final class TableListUseCase extends BaseUseCase
     public function listAllWithOrderStatus()
     {
         return $this->tableRepository->findAllWithOrderStatus();
+    }
+
+    public function listForReservation(Request $request)
+    {
+        return TableResource::collection(
+            $this->tableRepository->findAllForReservation($request)
+        );
     }
 }

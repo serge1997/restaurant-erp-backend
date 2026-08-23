@@ -10,6 +10,7 @@ use App\Models\Table;
 use App\Modules\Table\UseCases\TableCreateUseCase;
 use App\Modules\Table\UseCases\TableListUseCase;
 use App\Modules\Table\UseCases\TableUpdateUseCase;
+use Illuminate\Http\Request;
 
 class TableController extends BaseApiController
 {
@@ -21,7 +22,7 @@ class TableController extends BaseApiController
         $response = $useCase->execute($paginate);
         return $this->apiResponse("list restaurants tables", $response);
     }
-    
+
     public function store(TableCreateRequest $request)
     {
         /** @var TableCreateUseCase $useCase */
@@ -77,4 +78,14 @@ class TableController extends BaseApiController
         $response = $useCase->listAllWithOrderStatus();
         return $this->apiResponse("list tables with orders", $response);
     }
+
+    public function listForReservation(Request $request)
+    {
+        /**  @var TableListUseCase $useCase  */
+        $useCase = $this->container->get(TableListUseCase::class);
+        $response = $useCase->listForReservation($request);
+        return $this->apiResponse("list available tables for reservation", $response);
+    }
+
+
 }

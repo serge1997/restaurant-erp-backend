@@ -14,9 +14,10 @@ final class ReservationListUseCase
 
     public function execute(PaginateRequest $paginate)
     {
-        return ReservationResource::collection(
+        $collection = ReservationResource::collection(
             $this->reservationRepository->findAll($paginate)
         );
+        return $collection->collection->groupBy(fn($res) => explode(':', $res->hour)[0]);
     }
 
     public function listById(int $id)

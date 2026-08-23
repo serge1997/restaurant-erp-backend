@@ -37,4 +37,9 @@ enum ReservationStatusEnum: int
     {
         return $this == self::SEATED;
     }
+
+    public static function avalaibles(): array
+    {
+        return [self::CANCELLED->value];
+    }
 }

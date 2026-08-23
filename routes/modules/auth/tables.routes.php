@@ -7,6 +7,7 @@ Route::controller(TableController::class)->group(function(){
     Route::prefix("tables")->name("tables.")->group(function(){
         Route::get("/",  "index")->name("index");
         Route::post("/", "store")->name("store");
+        Route::get("/listForReservation", "listForReservation")->name("listForReservation");
         Route::get("/for-orders", "listForOrders")->name("listForOrders");
         Route::get("/availables", "listAvailables")->name("listAvailables");
         Route::get("/listAllWithOrderStatus", "listAllWithOrderStatus")->name("listAllWithOrderStatus");

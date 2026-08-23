@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Foundation\Base\BaseModel;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Reservation\Enums\ReservationStatusEnum;
 
@@ -10,6 +11,9 @@ class Reservation extends BaseModel
 {
     protected $fillable = [
         'customer',
+        'state_registration',
+        'phone',
+        'email',
         'date',
         'hour',
         'quantity_of_person',
@@ -17,7 +21,9 @@ class Reservation extends BaseModel
         'table_id',
         'restaurant_id',
         'created_by',
-        'status'
+        'status',
+        'duration',
+        'waiter_id'
     ];
 
     protected $casts = [
@@ -27,5 +33,17 @@ class Reservation extends BaseModel
     public function table(): BelongsTo
     {
         return $this->belongsTo(Table::class);
+    }
+
+    public function hour(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => substr($value, 0, 5)
+        );
+    }
+
+    public function waiter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'waiter_id');
     }
 }
