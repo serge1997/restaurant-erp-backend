@@ -10,7 +10,7 @@ enum ReservationStatusEnum: int
 
     public function getLabel(): string
     {
-        return match(self){
+        return match($this){
             self::PENDING   => "Pendente",
             self::CONFIRMED => "Confirmada",
             self::CANCELLED => "Cancelada",
@@ -41,5 +41,27 @@ enum ReservationStatusEnum: int
     public static function avalaibles(): array
     {
         return [self::CANCELLED->value];
+    }
+
+    public function getSeverity(): string
+    {
+        return match($this){
+            self::PENDING => "status-pending",
+            self::CONFIRMED => "status-confirmed",
+            self::CANCELLED => "status-cancelled",
+            self::SEATED => "status-seated",
+            default => ""
+        };
+    }
+
+    public function getLabelSeverity(): string
+    {
+        return match($this){
+            self::PENDING => "b-pending",
+            self::CONFIRMED => "b-confirmed",
+            self::CANCELLED => "b-cancelled",
+            self::SEATED => "b-seated",
+            default => ""
+        };
     }
 }

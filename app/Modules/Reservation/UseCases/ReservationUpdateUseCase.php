@@ -31,10 +31,11 @@ final class ReservationUpdateUseCase
             throw new TableException("mesa nao encontrada", 404);
         }
         if(!$table->is($reservation->table)){
-             if($table->hasOpenningReservation()){
+             if($table->hasOpenningReservationAt($payload['date'])){
                  throw new ReservationException("A mesa selecionada está com uma reserva aberta", 400);
              }
         }
-        $this->reservationRepository->save($payload);
+        $payload['duration']    = $payload['duration'] ? date('H:i', strtotime($payload['duration'])) : null;
+        $this->reservationRepository->update($reservation, $payload);
     }
 }

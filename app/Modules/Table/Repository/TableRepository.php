@@ -5,6 +5,7 @@ use App\Foundation\Base\BaseRepository;
 use App\Models\Table;
 use App\Modules\Order\Enums\OrderStatusEnum;
 use App\Modules\Reservation\Enums\ReservationStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -97,5 +98,15 @@ class TableRepository extends BaseRepository
                     })
                         ->get();
         return $query;
+    }
+
+    public function findAllreservedByDate(Carbon $date)
+    {
+        $day = $date->format('Y-m-d');
+        return $this->newQuery()
+            ->select("tables.*", DB::raw("date_format(r.hour, '%H:%i') as hour"))
+                ->join("reservations as r", "r.table_id", "=", "tables.id")
+                    ->whereDate("r.date", $day)
+                        ->get();
     }
 }

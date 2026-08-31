@@ -11,7 +11,7 @@ class ReservationUpdateRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,11 @@ class ReservationUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return array_merge(
+            [
+                'id'    => 'required|integer'
+            ],
+            ReservationCreateRequest::capture()->rules()
+        );
     }
 }

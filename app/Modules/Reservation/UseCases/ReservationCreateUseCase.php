@@ -23,7 +23,7 @@ final class ReservationCreateUseCase
         if(!$table){
             throw new TableException("mesa nao encontrada", 404);
         }
-        if($table->hasOpenningReservation()){
+        if($table->hasOpenningReservationAt($payload['date'])){
             throw new ReservationException("A mesa selecionada está com uma reserva aberta", 400);
         }
         $payload['date'] = date('Y-m-d', strtotime($payload['date']));

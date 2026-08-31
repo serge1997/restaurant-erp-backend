@@ -6,6 +6,7 @@ use App\Foundation\Base\BaseModel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Modules\Reservation\Enums\ReservationStatusEnum;
+use Carbon\Carbon;
 
 class Reservation extends BaseModel
 {
@@ -39,6 +40,13 @@ class Reservation extends BaseModel
     {
         return Attribute::make(
             get: fn($value) => substr($value, 0, 5)
+        );
+    }
+
+    public function duration(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => $value ? str_replace(":", "H", substr($value, 0, 5)) : null
         );
     }
 

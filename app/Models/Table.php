@@ -43,4 +43,9 @@ class Table extends BaseModel
         return $this->openingReservation()->exists();
     }
 
+    public function hasOpenningReservationAt(string $date): bool
+    {
+        return $this->openingReservation()->where('date', $date)->exists();
+    }
+
 }

@@ -39,7 +39,8 @@ final class TableListUseCase extends BaseUseCase
     {
         return [
             "available_tables" => TableResource::collection($this->tableRepository->findAllAvailable()),
-            "tables_with_orders" => $this->tableRepository->findAllWithOrders()
+            "tables_with_orders" => $this->tableRepository->findAllWithOrders(),
+            "tables_reserved"   => $this->tableRepository->findAllreservedByDate(today()->subDay())
         ];
     }
 
