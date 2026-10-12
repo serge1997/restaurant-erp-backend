@@ -28,6 +28,7 @@ class OrderItemsRequest extends FormRequest
            "items.*.quantity"                       => "required|integer",
            "items.*.unit_price"                     => "nullable|numeric",
            "items.*.side_dishes"                    => "nullable|array",
+           "items.*.side_dishes.*.id"               => "required|integer",
            "items.*.side_dishes.*.menu_item_id"     => "required|integer",
            "items.*.side_dishes.*.quantity"         => "required|integer",
         ];

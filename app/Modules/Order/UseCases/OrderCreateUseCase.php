@@ -45,8 +45,25 @@ final class OrderCreateUseCase extends BaseUseCase
             $items->each(function(MenuItem $item) use ($payload, &$itemPayload){
                array_map(function($orderItem) use ($item, &$itemPayload){
                    if ($orderItem["menu_item_id"] == $item->id){
+                        $payloadSideDishes = isset($orderItem["side_dishes"]) ? $orderItem["side_dishes"] : [];
                         $priceToUse = $item->getPriceToUse();
-                        $itemPayload[] = [...$orderItem, ...['unit_price'   => $priceToUse]];
+                        unset($orderItem['side_dishes']);
+                        $itemPayload[] = [...$orderItem, ...['unit_price' => $priceToUse]];
+                        if($payloadSideDishes != []){
+                            $sideDishItemsIds = array_column($payloadSideDishes, "id");
+                            $sideDishItems = $this->menuItemRepository->findByIds($sideDishItemsIds);
+                            $sideDishItems->each(function(MenuItem $sideDishItem) use ($orderItem, &$itemPayload, $payloadSideDishes){
+                                $currentSideDish = array_filter($payloadSideDishes, function($sideDish) use ($sideDishItem){
+                                    return $sideDish['id'] == $sideDishItem->id;
+                                });
+                                $itemPayload[] = [
+                                        'unit_price'                => $sideDishItem->getPriceToUse(), 
+                                        'menu_item_id'              => $sideDishItem->id, 
+                                        "parent_order_item_id"      => $orderItem["menu_item_id"],
+                                        "quantity"                  => $currentSideDish[0]["quantity"]
+                                ];
+                            });
+                        }
                    }
                }, $payload["items"]);
             });

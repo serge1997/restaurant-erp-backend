@@ -106,8 +106,7 @@ class MenuItem extends BaseModel
         if(!$this->featured_types){
             return false;
         }
-        $featuredTypes = array_map(fn($v) => (int)$v, explode(",", $this->featured_types));
-        return in_array(FeaturedMenuItemEnum::PROMOTION->value, $featuredTypes);
+        return in_array(FeaturedMenuItemEnum::PROMOTION->value, $this->featured_types);
     }
 
     public function usePromotionalPrice(): bool

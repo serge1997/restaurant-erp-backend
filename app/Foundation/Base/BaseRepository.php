@@ -204,6 +204,6 @@ abstract class BaseRepository implements BaseRepositoryInterface
     public function findByIds(array $ids)
     {
         $this->whereRestaurantId();
-        return $this->getQuery()->whereIn("id", $ids)->get();
+        return $this->newQuery()->whereIn("id", $ids)->get();
     }
 }

@@ -21,7 +21,11 @@ class OrderItemResource extends JsonResource
                 'id'    => $this->menuItem->id,
                 'name'  => $this->menuItem->name,
                 'image' => $this->menuItem->image
-            ]
+            ],
+            "side_dishes" => $this->when($this->hasSideDishes(), function () {
+                return ItemSideDishResource::collection($this->itemSideDishes);
+            }),
         ];
     }
+
 }

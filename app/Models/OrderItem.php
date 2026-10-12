@@ -16,7 +16,8 @@ class OrderItem extends BaseModel
         "status",
         "delivered_at",
         "created_by",
-        "quantity_cancelled"
+        "quantity_cancelled",
+        "parent_order_item_id"
     ];
 
     public function menuItem(): BelongsTo
@@ -47,5 +48,21 @@ class OrderItem extends BaseModel
     public function getEffectiveTotalAttribute(): float
     {
         return $this->effective_quantity * $this->unit_price;
+    }
+
+
+    public function isSideDish(): bool
+    {
+        return !is_null($this->parent_order_item_id);
+    }
+
+    public function itemSideDishes(): HasMany
+    {
+        return $this->order->allItems()->where('parent_order_item_id', $this->menu_item_id);
+    }
+
+    public function hasSideDishes(): bool
+    {
+        return $this->order->allItems()->where('parent_order_item_id', $this->menu_item_id)->exists();
     }
 }

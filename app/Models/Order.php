@@ -44,6 +44,11 @@ class Order extends BaseModel
 
     public function items(): HasMany
     {
+        return $this->hasMany(OrderItem::class)->whereNull('parent_order_item_id');
+    }
+
+    public function allItems(): HasMany
+    {
         return $this->hasMany(OrderItem::class);
     }
 
