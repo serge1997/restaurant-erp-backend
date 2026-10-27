@@ -31,7 +31,7 @@ class UserCreateRequest extends FormRequest
             'is_active' => 'boolean',
             'gender'    => 'required|string|in:M,F,O',
             'birth_date'    => 'nullable|date',
-            'roles'         => 'required|array',
+            'roles'         => 'nullable|array',
             'permissions'   => 'nullable|array',
             ...AddressCreateRequest::capture()->rules()
         ];

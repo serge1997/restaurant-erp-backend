@@ -5,6 +5,7 @@ use App\Http\Resources\Restaurant\RestaurantResource;
 use App\Modules\User\Infra\UserRepository;
 use App\Modules\User\Exceptions\UserException;
 use App\Http\Requests\User\UserUpdateRequest;
+use App\Models\Permission;
 use App\Models\Restaurant;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\UnauthorizedException;
@@ -36,15 +37,20 @@ final class UserUpdateUseCase
                 ],
                 $payload['address']
             );
-            $roles = $user->roles()->whereNotIn('id', $payload['roles'])->pluck('name');
+            $roles = $user->roles()->whereNotIn('id', $payload['roles'])->get();
             if($roles->toArray() != []){
                 $user->removeRole($roles);
             }
+            $permissions = [];
             foreach($payload['permissions'] as $permission) {
                 if ($user->hasPermissionTo($permission)) {
                     continue;
                 }
-                $user->givePermissionTo($permission);
+                $permissions[] = $permission;
+            }
+            if($permissions != []) {
+                $permissionsModels = Permission::whereIn('name', $permissions)->get();
+                $user->givePermissionTo($permissionsModels);
             }
             $allPermissions = array_merge($user->permissions->toArray(),...$user->rolesPermissions());
             $allPermissionsNames = array_column($allPermissions, 'name');
