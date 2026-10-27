@@ -109,6 +109,12 @@ abstract class BaseRepository implements BaseRepositoryInterface
                 }
             }
         }
+        if($paginate->orderBy && !$paginate->direction){
+            $this->getQuery()->orderBy($paginate->orderBy);
+        }
+        if($paginate->orderBy && $paginate->directionIsValid()){
+            $this->getQuery()->orderBy($paginate->orderBy, $paginate->direction);
+        }
         return $this;
     }
 

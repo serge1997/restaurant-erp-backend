@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Address\AddressResource;
 use App\Http\Resources\Role\RoleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,7 +19,7 @@ class UserFormResource extends JsonResource
         return [
             ...parent::toArray($request),
             'birth_date'    => $this->birth_date?->format('d/m/Y'),
-            'address'   => $this->address,
+            'address'   => $this->when($this->address, new AddressResource($this->address), null),
             'roles' => $this->roles()->pluck('id'),
             'roles_permissions'   => RoleResource::collection($this->roles)
         ];

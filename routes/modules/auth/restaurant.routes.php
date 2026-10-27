@@ -9,6 +9,6 @@ Route::controller(RestaurantController::class)->group(function(){
         Route::post("/", "store")->name("store");
         Route::get("/{restaurant}", "show")->name("show");
         Route::put("/", "update")->name("update");
-        Route::post("/files", "updateFiles")->name("update");
+        Route::post("/files", "updateFiles")->name("updateFiles");
     });
 });

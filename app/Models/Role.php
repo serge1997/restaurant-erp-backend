@@ -5,6 +5,8 @@ namespace App\Models;
 class Role extends \Spatie\Permission\Models\Role
 {
 
+    public $guard_name = 'api'; 
+
     public function loadPermissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'role_has_permissions', 'role_id', 'permission_id');

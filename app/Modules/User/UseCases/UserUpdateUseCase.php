@@ -6,7 +6,6 @@ use App\Modules\User\Infra\UserRepository;
 use App\Modules\User\Exceptions\UserException;
 use App\Http\Requests\User\UserUpdateRequest;
 use App\Models\Restaurant;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\UnauthorizedException;
 
@@ -19,14 +18,24 @@ final class UserUpdateUseCase
     public function execute(UserUpdateRequest $request)
     {
         $payload = $request->validated();
+        /** @var \App\Models\User $user */
         $user = $this->repository->find($payload['id']);
         if (!$user) {
             throw UserException::userNotFound();
         }
-        $user->assignRole($payload['roles']);
+        $user->giveRoles($payload['roles']);
         DB::transaction(function() use($payload, $user) {
             $this->repository->update($user, $payload);
-            $user->address()->update($payload['address']);
+            unset($payload['address']['state']);
+            unset($payload['address']['city']);
+            $payload['address']['model'] = \App\Models\User::class;
+            $user->address()->updateOrCreate(
+                [
+                    'model'     => \App\Models\User::class, 
+                    'model_id'  => $user
+                ],
+                $payload['address']
+            );
             $roles = $user->roles()->whereNotIn('id', $payload['roles'])->pluck('name');
             if($roles->toArray() != []){
                 $user->removeRole($roles);

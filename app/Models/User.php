@@ -89,7 +89,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function hasPermissionTo($permission, ?string $guardName = null): bool
+    public function hasPermissionTo($permission, string $guardName = 'api'): bool
     {
         $permissionName = is_string($permission) ? $permission : $permission->name;
         $direct = $this->permissions()->where('name', $permissionName)
@@ -178,5 +178,18 @@ class User extends Authenticatable
     public function activeRestaurantId(): int
     {
         return $this->switch_restaurant_id ?? $this->restaurant_id;
+    }
+
+    /**
+     * Summary of giveRoles
+     * @param array<int> $roles
+     * @return void
+     */
+    public function giveRoles(array $roles)
+    {
+        $this->assignRole(
+            Role::whereIn('id', $roles)
+            ->where('guard_name', 'api')->get()
+        );
     }
 }

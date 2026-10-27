@@ -22,9 +22,11 @@ class PaginateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'search' => ['nullable'],
-            'limit' => ['required'],
-            'offset' => ['required']
+            'search'    => ['nullable'],
+            'limit'     => ['required'],
+            'offset'    => ['required'],
+            'orderBy'   => ['nullable'],
+            'direction' => ['nullable']
         ];
     }
 
@@ -43,5 +45,10 @@ class PaginateRequest extends FormRequest
             }
        }
        return $this->input($key);
+   }
+
+   public function directionIsValid(): bool
+   {
+        return !empty($this->direction) && in_array(strtolower($this->direction), ['desc', 'asc']);
    }
 }
