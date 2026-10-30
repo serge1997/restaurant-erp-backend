@@ -21,6 +21,7 @@ class UserFormResource extends JsonResource
             'birth_date'    => $this->birth_date?->format('d/m/Y'),
             'address'   => $this->when($this->address, new AddressResource($this->address), null),
             'roles' => $this->roles()->pluck('id'),
+            'granted_permissions' => $this->getGrantedPermissions,
             'roles_permissions'   => RoleResource::collection($this->roles)
         ];
     }

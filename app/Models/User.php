@@ -89,7 +89,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function hasPermissionTo($permission, string $guardName = 'api'): bool
+    public function hasPermissionTo($permission, ?string $guardName = 'api'): bool
     {
         $permissionName = is_string($permission) ? $permission : $permission->name;
         $direct = $this->permissions()->where('name', $permissionName)
@@ -102,7 +102,7 @@ class User extends Authenticatable
         );
     }
 
-    public function permissions(): BelongsToMany
+    public function getGrantedPermissions(): BelongsToMany
     {
         return $this->morphToMany(
             config('permission.models.permission'),

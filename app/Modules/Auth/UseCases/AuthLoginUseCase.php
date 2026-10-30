@@ -44,7 +44,7 @@ final class AuthLoginUseCase
     private function loadMenu(User $user)
     {
         $results = [];
-        $allPermissions = array_merge($user->permissions->toArray(),...$user->rolesPermissions());
+        $allPermissions = array_merge($user->getGrantedPermissions->toArray(),...$user->rolesPermissions());
         $routesGroupIds = array_column($allPermissions, 'route_group_id');
         $routesGroupes = RouteGroup::whereIn('id', $routesGroupIds)->get();
         $groupes = RouteGroupResource::collection($routesGroupes);

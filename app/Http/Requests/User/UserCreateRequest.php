@@ -29,7 +29,7 @@ class UserCreateRequest extends FormRequest
             'email' => 'nullable|email|max:255',
             'cpf'   => 'required|string|max:14|',
             'is_active' => 'boolean',
-            'gender'    => 'required|string|in:M,F,O',
+            'gender'    => 'nullable|string|in:M,F,O',
             'birth_date'    => 'nullable|date',
             'roles'         => 'nullable|array',
             'permissions'   => 'nullable|array',

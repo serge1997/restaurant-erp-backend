@@ -52,7 +52,7 @@ final class UserUpdateUseCase
                 $permissionsModels = Permission::whereIn('name', $permissions)->get();
                 $user->givePermissionTo($permissionsModels);
             }
-            $allPermissions = array_merge($user->permissions->toArray(),...$user->rolesPermissions());
+            $allPermissions = array_merge($user->getGrantedPermissions->toArray(),...$user->rolesPermissions());
             $allPermissionsNames = array_column($allPermissions, 'name');
             foreach($allPermissionsNames as $permission){
                 $getNamePermission = array_find($allPermissions, fn($pem) => $pem['name'] == $permission);
