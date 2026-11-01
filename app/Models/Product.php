@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Foundation\Base\BaseModel;
+use App\Modules\Product\Enums\ProductInStockLabelEnum;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
@@ -55,6 +56,25 @@ class Product extends BaseModel
     public function category(): BelongsTo
     {
         return $this->belongsTo(ProductCategory::class, 'category_id');
+    }
+
+    public function inStock(float $quantity): ProductInStockLabelEnum
+    {
+        if ($quantity < 1) {
+            return ProductInStockLabelEnum::UNVAILABLE;
+        }
+        if($quantity > $this->min_quantity || $quantity === $this->min_quantity){
+            return ProductInStockLabelEnum::AVAILABLE;
+        }
+        return ProductInStockLabelEnum::LOW;
+    }
+
+    public function isStockAlertable(float $quantity): bool
+    {
+        if ($quantity < 1 || $quantity < $this->min_quantity) {
+            return true;
+        }
+        return false;
     }
 
     public function getInStockLabel(int $quantity): string

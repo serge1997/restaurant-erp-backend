@@ -4,7 +4,10 @@ namespace App\Modules\StockMovment\Handlers;
 use App\Models\Product;
 use App\Foundation\Base\BaseModel;
 use App\Models\OrderItem;
+use App\Models\StockMovment;
 use App\Models\TechnicalSheet;
+use App\Modules\Alert\Enums\AlertSeverityEnum;
+use App\Modules\Alert\Infra\Repository\AlertRepository;
 use App\Modules\StockMovment\Enums\StockMovmentDirectionEnum;
 use App\Modules\StockMovment\Exceptions\StockMovementException;
 use App\Modules\StockMovment\Handlers\Contracts\StockMovmentHandlerInterface;
@@ -14,7 +17,8 @@ use App\Modules\StockMovment\Enums\StockMovmentReferenceTypeEnum;
 class SaleHandler implements StockMovmentHandlerInterface
 {
     public function __construct(
-        private readonly StockMovmentRepository $stockMovmentRepository
+        private readonly StockMovmentRepository $stockMovmentRepository,
+        private readonly AlertRepository $alertRepository
     ){}
     public function handle(?BaseModel $reference, array $payload, ?Product $product = null)
     {
@@ -49,7 +53,27 @@ class SaleHandler implements StockMovmentHandlerInterface
                         "reference_type"    => StockMovmentReferenceTypeEnum::SALE->value,
                         "reference_id"      => $reference->id
                     ];
-                    $this->stockMovmentRepository->save($payload);
+                    /** @var StockMovment $stock */
+                    $stock = $this->stockMovmentRepository->save($payload);
+
+                    if($product->isStockAlertable($stock->current_stock)){
+                        /** @var Product $product */
+                        $product = $stock->product;
+                        $alertPayload = [
+                            "title"         => sprintf("%s está com estoque insponivel", $product->name),
+                            "description"   => "A quantidade desse produto está zerado, todo pedido do item com ficha tecnica habiltado nao podem ser concluido",
+                            "severity"      => AlertSeverityEnum::URGENT->value,
+                            "is_resolved"   => false,
+                            "alertable_type"    => Product::class,
+                            "alertable_id"      => $product->id,
+                        ];
+                        if($product->inStock($stock->current_stock)->isLow()){
+                            $alertPayload['title'] = sprintf("%s está com estoque baixo", $product->name);
+                            $alertPayload['description']    = "A quantidade desse produto está em baixo da quantidade minima.";
+                            $alertPayload["severity"]      = AlertSeverityEnum::WARNING->value;
+                        }
+                        $this->alertRepository->updateOrCreate($alertPayload);
+                    }
                 });
             }
         }

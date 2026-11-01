@@ -6,6 +6,7 @@ use App\Http\Requests\Order\OrderCreateRequest;
 use App\Models\MenuItem;
 use App\Models\Order;
 use App\Models\Reservation;
+use App\Modules\Alert\Infra\Repository\AlertRepository;
 use App\Modules\MenuItem\Repository\MenuItemRepository;
 use App\Modules\Order\Exceptions\OrderException;
 use App\Modules\Order\Infra\OrderRepository;
@@ -22,7 +23,8 @@ final class OrderCreateUseCase extends BaseUseCase
         private readonly OrderRepository $orderRepository,
         private readonly MenuItemRepository $menuItemRepository,
         private readonly StockMovmentRepository $stockMovmentRepository,
-        private readonly ReservationRepository $reservationRepository
+        private readonly ReservationRepository $reservationRepository,
+        private AlertRepository $alertRepository
     ){
         parent::__construct($orderRepository);
     }
@@ -78,7 +80,7 @@ final class OrderCreateUseCase extends BaseUseCase
                 }
                 $reservation->setAsSeated();
             }
-            $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository);
+            $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository, $this->alertRepository);
             $handler = $stockMovementHandler->handler(StockMovmentReferenceTypeEnum::SALE);
             $handler->handle($order, $payload);
         });

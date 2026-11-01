@@ -15,4 +15,14 @@ class AlertRepository extends BaseRepository
     {
         return app(Alert::class);
     }
+
+    public function updateOrCreate(array $payload): Alert
+    {
+        return $this->eloquent()->updateOrCreate([
+            'alertable_type'    => $payload['alertable_type'],
+            'alertable_id'      => $payload['alertable_id'],
+            'severity'          => $payload['severity'],
+            'is_resolved'       => false
+        ], $payload);
+    }
 }

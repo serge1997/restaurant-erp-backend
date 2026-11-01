@@ -3,6 +3,7 @@
 namespace App\Http\Resources\StockMovment;
 
 use App\Foundation\Base\BaseJsonResource;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class StockMovmentResource extends BaseJsonResource
@@ -16,6 +17,8 @@ class StockMovmentResource extends BaseJsonResource
     {
         $in = $this->inSum();
         $out = $this->outSum();
+        /** @var Product $product */
+        $product = $this->product;
         return [
             "id"                => $this->id,
             "description"       => $this->description,
@@ -38,12 +41,12 @@ class StockMovmentResource extends BaseJsonResource
                 "code"          => $this->reference?->code ?? $this->reference?->id ?? $this->reference_type->getLabel(),
             ],
             "product"           => [
-                "id"    => $this->product->id,
-                "name"  => $this->product->name,
-                "unit_measure_label" => $this->product->category->unit_measure->purchaseRequestLabel(),
-                "db_unit_size_label"    => $this->product->category->unit_measure->getLabel(),
-                "in_stock_label"   => $this->product->getInStockLabel($this->current_stock),
-                "in_stock_label_severity"   => $this->product->getInStockLabelSeverity($this->current_stock)
+                "id"    => $product->id,
+                "name"  => $product->name,
+                "unit_measure_label" => $product->category->unit_measure->purchaseRequestLabel(),
+                "db_unit_size_label"    => $product->category->unit_measure->getLabel(),
+                "in_stock_label"   => $product->inStock($this->current_stock)->getLabel(),
+                "in_stock_label_severity"   => $product->inStock($this->current_stock)->getSeverity()
             ],
             'details' => [],
             'moved_at' => [

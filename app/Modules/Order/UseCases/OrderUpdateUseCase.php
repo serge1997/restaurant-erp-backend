@@ -3,6 +3,7 @@ namespace App\Modules\Order\UseCases;
 
 use App\Http\Requests\Order\OrderUpdateRequest;
 use App\Models\OrderItem;
+use App\Modules\Alert\Infra\Repository\AlertRepository;
 use App\Modules\Order\Exceptions\OrderException;
 use App\Modules\Order\Infra\OrderRepository;
 use App\Modules\StockMovment\Enums\StockMovmentReferenceTypeEnum;
@@ -14,7 +15,8 @@ final class OrderUpdateUseCase
 {
     public function __construct(
         private readonly OrderRepository $orderRepository,
-        private readonly StockMovmentRepository $stockMovmentRepository
+        private readonly StockMovmentRepository $stockMovmentRepository,
+        private readonly AlertRepository $alertRepository
     ){}
 
     public function execute(OrderUpdateRequest $request)
@@ -43,7 +45,7 @@ final class OrderUpdateUseCase
             if ($toSave != []){
                 $order->items()->saveMany($toSave);
             }
-            $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository);
+            $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository, $this->alertRepository);
             $handler = $stockMovementHandler->handler(StockMovmentReferenceTypeEnum::SALE);
             $handler->handle($order, $payload);
             

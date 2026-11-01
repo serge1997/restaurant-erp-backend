@@ -5,6 +5,7 @@ use App\Http\Requests\Order\OrderCancelItemRequest;
 use App\Http\Requests\Order\OrderCancelRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Modules\Alert\Infra\Repository\AlertRepository;
 use App\Modules\Order\Enums\OrderStatusEnum;
 use App\Modules\Order\Exceptions\OrderException;
 use App\Modules\Order\Infra\OrderRepository;
@@ -17,7 +18,8 @@ final class OrderCancelUseCase
 {
     public function __construct(
         private readonly OrderRepository $orderRepository,
-        private readonly StockMovmentRepository $stockMovmentRepository
+        private readonly StockMovmentRepository $stockMovmentRepository,
+        private readonly AlertRepository $alertRepository
     ){}
 
     public function execute(OrderCancelRequest $request)
@@ -56,7 +58,7 @@ final class OrderCancelUseCase
             $payload['reset_stock_quantities'] = $reset_stock_quantities;
             $payload['is_cancelling_order'] = true;
             if($payload['restock']){
-                $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository);
+                $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository, $this->alertRepository);
                 $handler = $stockMovementHandler->handler(StockMovmentReferenceTypeEnum::DEVOLUTION_SALE);
                 $handler->handle($order, $payload);
             }
@@ -98,7 +100,7 @@ final class OrderCancelUseCase
             $item->itemCancellations()->create($payload);
             $payload['is_cancelling_order'] = false;
             if($payload['restock'] && $item->menuItem->technicalSheet && $item->menuItem->isEnableTechnicalheet()){
-                $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository);
+                $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository, $this->alertRepository);
                 $handler = $stockMovementHandler->handler(StockMovmentReferenceTypeEnum::DEVOLUTION_SALE);
                 $handler->handle($item, $payload);
             }
