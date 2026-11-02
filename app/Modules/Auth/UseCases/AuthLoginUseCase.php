@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Modules\PreRegistration\Infra\Repository\PreRegistrationRepository;
 use App\Modules\User\Infra\UserRepository;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\UnauthorizedException;
 
@@ -48,6 +49,7 @@ final class AuthLoginUseCase
         $routesGroupIds = array_column($allPermissions, 'route_group_id');
         $routesGroupes = RouteGroup::whereIn('id', $routesGroupIds)->get();
         $groupes = RouteGroupResource::collection($routesGroupes);
+        $forCachedPermissions = [];
         foreach ($groupes as $group) {
             $modulesIds = array_column($results, 'id');
             if (in_array($group->module->id, $modulesIds)){
@@ -57,6 +59,7 @@ final class AuthLoginUseCase
                 $index = array_search($group->module->id, array_column($results, 'id'));
                 $permissions = [...$results[$index]['permissions'], ...$group->permissions];
                 $results[$index]['permissions'] = $permissions;
+                $forCachedPermissions = [...$forCachedPermissions, ...$permissions];
                 continue;
             }
             if ($group->permissions){
@@ -66,8 +69,10 @@ final class AuthLoginUseCase
                     'module'    => $group->module,
                     'permissions'   => $group->permissions ?? []
                 ];
+                $forCachedPermissions = [...$forCachedPermissions, ...$group->permissions];
             }
         }
+        Cache::put(sprintf("%s_%d_%s", "user", $user->id, "permissions"), json_encode($forCachedPermissions));
         return $results;
     }
 }

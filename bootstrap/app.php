@@ -18,6 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->append(JsonResponseMetaDataMiddleware::class);
+        $middleware->alias([
+            'route.permission' => \App\Http\Middleware\RoutePermissionMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
 
