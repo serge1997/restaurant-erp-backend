@@ -42,14 +42,19 @@ class Order extends BaseModel
         'business_day'      => 'date'
     ];
 
-    public function items(): HasMany
+    public function itemsWithSideDishes(): HasMany
     {
         return $this->hasMany(OrderItem::class)->whereNull('parent_order_item_id');
     }
 
-    public function allItems(): HasMany
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function hasItem(int $menuItemId): bool
+    {
+        return $this->items()->where("menu_item_id", $menuItemId)->exists();
     }
 
     public function table(): BelongsTo

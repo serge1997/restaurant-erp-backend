@@ -3,6 +3,7 @@ namespace App\Modules\StockMovment\UseCases;
 
 use App\Http\Requests\StockMovment\StockMovmentCreateRequest;
 use App\Models\Product;
+use App\Modules\Alert\Infra\Repository\AlertRepository;
 use App\Modules\Product\Repository\ProductRepostory;
 use App\Modules\PurchaseRequisition\Repository\PurchaseRequisitionRepository;
 use App\Modules\StockMovment\Enums\StockMovmentReferenceTypeEnum;
@@ -17,7 +18,8 @@ final class StockMovmentCreateUseCase
     public function __construct(
         private readonly StockMovmentRepository $stockMovmentRepository,
         private readonly PurchaseRequisitionRepository $purchaseRequisitionRepository,
-        private readonly ProductRepostory $productRepostory
+        private readonly ProductRepostory $productRepostory,
+        private readonly AlertRepository $alertRepository
     ){}
 
     public function execute(StockMovmentCreateRequest $request)
@@ -34,7 +36,7 @@ final class StockMovmentCreateUseCase
             throw new StockMovementException("Referencia nao encontrada", 400);
         }
         DB::transaction(function() use($movmentReferenceType, $product, $payload, $reference){
-            $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository);
+            $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository, $this->alertRepository);
             $handler = $stockMovementHandler->handler($movmentReferenceType);
             $handler->handle($reference, $payload, $product);
         });

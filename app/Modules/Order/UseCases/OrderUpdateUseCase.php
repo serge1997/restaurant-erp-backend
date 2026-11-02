@@ -22,33 +22,32 @@ final class OrderUpdateUseCase
     public function execute(OrderUpdateRequest $request)
     {
         $payload = $request->validated();
+        /** @var \App\Models\Order $order */
         $order = $this->orderRepository->find($payload['id']);
         if (!$order){
             throw OrderException::notFound();
         }
         DB::transaction(function() use($order, $payload){
+            $toSave = [];
             $items = $order->items;
             $payloadItems =  $payload['items'];
-            $items->each(function(OrderItem $item) use($payloadItems, &$toSave){
-                foreach($payloadItems as $payloadItem) {
-                    if (array_key_exists('order_item_id', $payloadItem) == false){
-                        $toSave[] = new OrderItem($payloadItem);
-                        continue;
-                    }
-                    if ($payloadItem['order_item_id'] == $item->id){
-                        $payloadItem['quantity'] = $payloadItem['quantity'] + $item->quantity;
-                        $item->update($payloadItem);
-                        continue;
-                    }
+            foreach($payloadItems as $payloadItem) {
+                if(!$order->hasItem($payloadItem["menu_item_id"])) {
+                    $toSave[] = new OrderItem($payloadItem);
+                    continue;
                 }
-            });
+                if($order->hasItem($payloadItem["menu_item_id"])){
+                    $item = $items->where('menu_item_id', $payloadItem['menu_item_id'])->first();
+                    $payloadItem['quantity'] = $payloadItem['quantity'] + $item->quantity;
+                    $item->update($payloadItem);
+                }
+            }
             if ($toSave != []){
                 $order->items()->saveMany($toSave);
             }
             $stockMovementHandler = new StockMovmentHandler($this->stockMovmentRepository, $this->alertRepository);
             $handler = $stockMovementHandler->handler(StockMovmentReferenceTypeEnum::SALE);
             $handler->handle($order, $payload);
-            
         });
     }
 }

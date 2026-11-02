@@ -58,11 +58,11 @@ class OrderItem extends BaseModel
 
     public function itemSideDishes(): HasMany
     {
-        return $this->order->allItems()->where('parent_order_item_id', $this->menu_item_id);
+        return $this->order->items()->where('parent_order_item_id', $this->menu_item_id);
     }
 
     public function hasSideDishes(): bool
     {
-        return $this->order->allItems()->where('parent_order_item_id', $this->menu_item_id)->exists();
+        return $this->order->items()->where('parent_order_item_id', $this->menu_item_id)->exists();
     }
 }
