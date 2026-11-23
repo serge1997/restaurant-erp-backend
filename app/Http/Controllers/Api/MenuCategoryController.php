@@ -42,4 +42,12 @@ class MenuCategoryController extends BaseApiController
         return $this->apiResponse(message: "Categoria do menu alterada com successo", status: 200);
     }
 
+    public function listTopCategories()
+    {
+        /**  @var \App\Modules\MenuCategory\UseCases\MenuCategoryListUseCase $useCse  */
+        $useCase = $this->container->get(\App\Modules\MenuCategory\UseCases\MenuCategoryListUseCase::class);
+        $result = $useCase->listTopCategories();
+        return $this->apiResponse("list top categories", $result);
+    }
+
 }

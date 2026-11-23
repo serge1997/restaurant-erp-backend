@@ -23,4 +23,13 @@ final class MenuCategoryListUseCase
     {
         return new MenuCategoryResource($menuCategory);
     }
+
+    public function listTopCategories()
+    {
+        $category_ids = $this->menuCategoryRepository->findTopCategories()
+            ->limit(4)->pluck('category_id')->toArray();
+        return MenuCategoryResource::collection(
+            $this->menuCategoryRepository->findByIds($category_ids)
+        );
+    }
 }
