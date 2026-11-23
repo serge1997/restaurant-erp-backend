@@ -15,6 +15,8 @@ class RoutePermissionMiddleware
         'api.orders.homeKpis',
         'api.tables.listAllWithOrderStatus',
         'api.alerts.index',
+        'api.purchaseRequisitions.show',
+        'api.purchaseRequisitions.pdf'
     ];
     /**
      * Handle an incoming request.

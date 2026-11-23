@@ -5,11 +5,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        UID: ${UID}
+        GID: ${GID}
     container_name: restaurant_app
     restart: unless-stopped
-    working_dir: /var/www
+    working_dir: /app
+    user: ${UID}:${GID}
+    env_file:
+      - ./.env
     volumes:
-      - .:/var/www
+      - .:/app
     depends_on:
       - mysql
     networks:
@@ -23,7 +29,7 @@ services:
     ports:
       - "8000:80"
     volumes:
-      - .:/var/www
+      - .:/app
       - ./docker/nginx:/etc/nginx/conf.d
     depends_on:
       - app
