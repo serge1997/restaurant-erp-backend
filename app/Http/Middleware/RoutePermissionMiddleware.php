@@ -31,7 +31,7 @@ class RoutePermissionMiddleware
             $hasPermission = collect($permissions)->contains(function ($permission) use ($routeName) {
                 return $permission['name'] === $routeName;
             });
-            if (!$hasPermission) {
+            if (!$hasPermission && !$auth->hasRole('super_admin')) {
                 return response()->json([
                     'message' => 'Permission denied for this route',
                 ], 403);

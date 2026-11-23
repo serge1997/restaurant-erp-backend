@@ -15,6 +15,7 @@ return new class extends Migration
         $orderGroup = DB::table('route_groups')->where('name', 'pedidos')->first();
         $tableGroup = DB::table('route_groups')->where('name', 'mesas')->first();
         $stock = DB::table('route_groups')->where('name', 'estoque')->first();
+        $menuItemGroup = DB::table('route_groups')->where('name', 'itens do menu')->first();
         $permissions = [
             [
                 'name' => 'api.users.show',
@@ -79,6 +80,52 @@ return new class extends Migration
                 'show_in_menu' => false,
                 'guard_name' => 'api',
             ],
+            [
+                'name' => 'api.menuCategories.index',
+                'label' => 'Categorias do menu',
+                'route_group_id' => $menuItemGroup->id,
+                'description' => 'Visualizar Categorias do menu',
+                'type' => 'api',
+                'view_path'  => 'menu-categories',
+                'show_in_menu' => true,
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'api.menuCategories.show',
+                'label' => 'Categorias do menu',
+                'route_group_id' => $menuItemGroup->id,
+                'description' => 'Visualizar Categoria do menu',
+                'type' => 'api',
+                'show_in_menu' => false,
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'api.menuCategories.store',
+                'label' => 'Criar Categoria do menu',
+                'route_group_id' => $menuItemGroup->id,
+                'description' => 'Criar Categoria do menu',
+                'type' => 'api',
+                'show_in_menu' => false,
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'api.menuCategories.update',
+                'label' => 'Alterar Categoria do menu',
+                'route_group_id' => $menuItemGroup->id,
+                'description' => 'Alterar Categoria do menu',
+                'type' => 'api',
+                'show_in_menu' => false,
+                'guard_name' => 'api',
+            ],
+            [
+                'name' => 'api.menuCategories.delete',
+                'label' => 'Remover Categoria do menu',
+                'route_group_id' => $menuItemGroup->id,
+                'description' => 'Remover Categoria do menu',
+                'type' => 'api',
+                'show_in_menu' => false,
+                'guard_name' => 'api',
+            ],
         ];
         DB::transaction(function() use($permissions){
             foreach ($permissions as $permission) {
@@ -99,7 +146,9 @@ return new class extends Migration
                 'api.tables.listAvailables',
                 'api.tables.listAllWithOrderStatus',
                 'api.purchaseRequisitions.pdf',
-                'api.purchaseRequisitions.show'
+                'api.purchaseRequisitions.show',
+                'api.menuCategories.index',
+                'api.menuCategories.show'
             ]);
             $waiter = Role::where('name', 'garcom')->first();
             $waiter->givePermissionTo([
@@ -107,6 +156,13 @@ return new class extends Migration
                 'api.orders.homeKpis',
                 'api.tables.listAvailables',
                 'api.tables.listAllWithOrderStatus',
+                'api.menuCategories.index',
+                'api.menuCategories.show',
+            ]);
+            $kicken = Role::where('name', 'cozinha')->first();
+            $kicken->givePermissionTo([
+                'api.menuCategories.index',
+                'api.menuCategories.show'
             ]);
         });
     }
@@ -116,6 +172,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        $kicken = Role::where('name', 'cozinha')->first();
         $admin = Role::where('name', 'admin')->first();
         $admin->revokePermissionTo([
             'api.users.show',
@@ -125,7 +182,8 @@ return new class extends Migration
             'api.tables.listAvailables',
             'api.tables.listAllWithOrderStatus',
             'api.purchaseRequisitions.pdf',
-            'api.purchaseRequisitions.show'
+            'api.purchaseRequisitions.show',
+            'api.menuCategories.index'
         ]);
         $waiter = Role::where('name', 'garcom')->first();
         $waiter->revokePermissionTo([
@@ -133,6 +191,11 @@ return new class extends Migration
             'api.orders.homeKpis',
             'api.tables.listAvailables',
             'api.tables.listAllWithOrderStatus',
+            'api.menuCategories.index'
+        ]);
+        $kicken->revokePermissionTo([
+            'api.menuCategories.index',
+            'api.menuCategories.show',
         ]);
         DB::table("permissions")->whereIn('name', [
             'api.users.show',
@@ -141,7 +204,12 @@ return new class extends Migration
             'api.tables.listAvailables',
             'api.tables.listAllWithOrderStatus',
             'api.purchaseRequisitions.pdf',
-            'api.purchaseRequisitions.show'
+            'api.purchaseRequisitions.show',
+            'api.menuCategories.index',
+            'api.menuCategories.store',
+            'api.menuCategories.update',
+            'api.menuCategories.show',
+            'api.menuCategories.delete'
         ])->delete();
     }
 };
