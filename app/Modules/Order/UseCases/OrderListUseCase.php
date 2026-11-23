@@ -104,6 +104,7 @@ final class OrderListUseCase
         }
         if($yesterday == 0) {
             $closedPerc = 100;
+            return number_format($closedPerc, 2, '.', '.');
         }
         $closedDiff = $today - $yesterday;
         $closedPerc = $closedDiff * 100 / $yesterday;

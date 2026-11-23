@@ -11,12 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 class RoutePermissionMiddleware
 {
     private $allowedRoutes = [
-        'api.tables.listAllWithOrderStatus',
-        'api.orders.homeKpis',
-        'api.tables.listAllWithOrderStatus',
         'api.alerts.index',
-        'api.purchaseRequisitions.show',
-        'api.purchaseRequisitions.pdf'
+        'api.modules.index',
+        'api.roles.index',
     ];
     /**
      * Handle an incoming request.
