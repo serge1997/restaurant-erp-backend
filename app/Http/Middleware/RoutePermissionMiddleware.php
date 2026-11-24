@@ -14,7 +14,8 @@ class RoutePermissionMiddleware
         'api.alerts.index',
         'api.modules.index',
         'api.roles.index',
-        'api.menuCategories.listTopCategories'
+        'api.menuCategories.listTopCategories',
+        'api.auth.logout'
     ];
     /**
      * Handle an incoming request.

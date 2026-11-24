@@ -25,6 +25,7 @@ final class AuthLoginUseCase
     public function execute(AuthLoginRequest $request)
     {
         $payload = $request->validated();
+        /** @var ?User $user */
         $user = $this->userRepository->findFirstBy(["username"], [$payload['username']]);
         if (!$user || !Hash::check($request->password, $user->password)){
             throw new UnauthorizedException("usuario ou senha invalido", 401);
@@ -35,6 +36,11 @@ final class AuthLoginUseCase
             $user->assignRole(Role::findByName('admin', 'api'));
         }
         $user->tokens()->delete();
+        if($user->switch_restaurant_id){
+            $this->userRepository->update($user, [
+                'switch_restaurant_id'  => null
+            ]);
+        }
         return [
             "token" => $user->createToken('browser', ['*'], $expireAt)->plainTextToken,
             "menu"  => $this->loadMenu($user),
