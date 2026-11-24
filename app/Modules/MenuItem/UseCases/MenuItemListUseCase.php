@@ -5,14 +5,12 @@ use App\Http\Requests\PaginateRequest;
 use App\Http\Resources\MenuItem\MenuItemFormResource;
 use App\Http\Resources\MenuItem\MenuItemResource;
 use App\Models\MenuItem;
-use App\Modules\MenuCategory\Repository\MenuCategoryRepository;
 use App\Modules\MenuItem\Repository\MenuItemRepository;
 
 final class MenuItemListUseCase
 {
     public function __construct(
         private readonly MenuItemRepository $menuItemRepository,
-        private readonly MenuCategoryRepository $menuCategoryRepository
     ){}
 
     public function execute(PaginateRequest $paginate)

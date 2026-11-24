@@ -32,6 +32,10 @@ class RestaurantResource extends JsonResource
             'logo' => $this->logo,
             'reservation_buffer_time' => $this->reservation_buffer_time,
             'address' => new AddressResource($this->address),
+            'chain' => [
+                'id'    => $this->chain->id,
+                'name'  => $this->chain->name
+            ]
         ];
     }
 }
